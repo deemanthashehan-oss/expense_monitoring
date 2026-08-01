@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>💰 Daily Finance Tracker – Shehan Deemantha</title>
+  <title>💰 Daily Finance Tracker</title>
   <!-- Google Font & Font Awesome -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:opsz@14..32&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
@@ -32,53 +32,74 @@
       box-shadow: 0 20px 60px rgba(0, 20, 30, 0.12);
     }
 
-    .header-row {
+    /* ---- HEADER with editable name ---- */
+    .header-area {
       display: flex;
-      justify-content: space-between;
-      align-items: flex-end;
       flex-wrap: wrap;
-      gap: 12px;
-      border-bottom: 2px solid #eef2f7;
-      padding-bottom: 14px;
-      margin-bottom: 8px;
+      align-items: baseline;
+      gap: 6px 12px;
+      margin-bottom: 4px;
     }
-    .header-row h1 {
+    .header-area h1 {
       font-size: 28px;
       font-weight: 700;
       color: #0b1a33;
       display: flex;
       align-items: center;
-      gap: 12px;
+      flex-wrap: wrap;
+      gap: 8px;
     }
-    .header-row h1 i {
+    .header-area h1 i {
       color: #2a7de1;
     }
-    .user-badge {
-      background: linear-gradient(145deg, #eaf3ff, #dce7f7);
-      padding: 8px 24px;
-      border-radius: 40px;
-      font-weight: 600;
-      color: #1a5fb4;
-      font-size: 18px;
-      letter-spacing: 0.3px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      border: 1px solid #cddff5;
+    .name-input {
+      font: inherit;
+      font-weight: 700;
+      font-size: 28px;
+      color: #0b1a33;
+      background: transparent;
+      border: none;
+      border-bottom: 3px dashed #cddff5;
+      padding: 0 6px;
+      min-width: 160px;
+      width: auto;
+      outline: none;
+      transition: border-color 0.2s;
+      letter-spacing: -0.3px;
     }
-    .user-badge i {
-      font-size: 18px;
+    .name-input:focus {
+      border-bottom-color: #2a7de1;
+    }
+    .name-input::placeholder {
+      color: #b0c4de;
+      font-weight: 500;
+      font-size: 22px;
+    }
+    .header-area .title-suffix {
+      font-weight: 400;
+      font-size: 22px;
+      color: #3d4f66;
+    }
+    .header-area .edit-hint {
+      font-size: 13px;
+      color: #8a9bb0;
+      background: #f2f6fc;
+      padding: 2px 12px;
+      border-radius: 30px;
+      font-weight: 400;
+      margin-left: 4px;
     }
 
     .subhead {
       color: #5f6f88;
       font-size: 14px;
       margin-bottom: 28px;
+      border-bottom: 2px solid #eef2f7;
+      padding-bottom: 16px;
       display: flex;
       justify-content: space-between;
       flex-wrap: wrap;
       gap: 8px;
-      padding-top: 4px;
     }
     .subhead .target-set {
       background: #eaf3ff;
@@ -92,7 +113,7 @@
     /* ---- KPI CARDS ---- */
     .kpi-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
       gap: 16px;
       margin-bottom: 28px;
     }
@@ -309,6 +330,15 @@
     .form-row .btn-add i {
       font-size: 16px;
     }
+    .form-row .batch-hint {
+      font-size: 12px;
+      color: #5f6f88;
+      background: #eef3fa;
+      padding: 4px 14px;
+      border-radius: 30px;
+      margin-left: 4px;
+      white-space: nowrap;
+    }
 
     /* ---- TRANSACTION TABLE ---- */
     .table-wrap {
@@ -376,7 +406,7 @@
       font-style: italic;
     }
 
-    /* ---- CATEGORY BREAKDOWN (simple) ---- */
+    /* ---- CATEGORY BREAKDOWN ---- */
     .category-breakdown {
       margin-top: 28px;
       display: grid;
@@ -429,12 +459,14 @@
     /* Responsive */
     @media (max-width: 650px) {
       .container { padding: 18px 14px; }
-      .header-row h1 { font-size: 22px; }
-      .user-badge { font-size: 15px; padding: 6px 16px; }
+      .header-area h1 { font-size: 22px; flex-wrap: wrap; }
+      .name-input { font-size: 22px; min-width: 120px; }
+      .header-area .title-suffix { font-size: 18px; }
       .kpi-card .value { font-size: 22px; }
       .form-row .btn-add { width: 100%; justify-content: center; margin-left: 0; }
       .gauge-section { flex-direction: column; align-items: stretch; }
       .target-input-area { flex-wrap: wrap; justify-content: center; }
+      .form-row .batch-hint { display: none; }
     }
   </style>
 </head>
@@ -442,12 +474,14 @@
 
 <div class="container">
 
-  <!-- HEADER WITH NAME -->
-  <div class="header-row">
-    <h1><i class="fas fa-wallet"></i> Daily Finance Tracker</h1>
-    <div class="user-badge">
-      <i class="fas fa-user-circle"></i> Shehan Deemantha
-    </div>
+  <!-- HEADER with editable name -->
+  <div class="header-area">
+    <h1>
+      <i class="fas fa-wallet"></i>
+      <input type="text" id="userNameInput" class="name-input" value="Shehan Deemantha" placeholder="Your Name" />
+      <span class="title-suffix">Daily Finance Tracker</span>
+    </h1>
+    <span class="edit-hint"><i class="fas fa-pen"></i> click name to edit</span>
   </div>
 
   <div class="subhead">
@@ -532,6 +566,7 @@
       <input type="text" id="txReason" placeholder="Optional note" />
     </div>
     <button class="btn-add" id="addBtn"><i class="fas fa-plus-circle"></i> Add</button>
+    <span class="batch-hint"><i class="fas fa-sync-alt"></i> Date & Type stay for quick batch adding</span>
   </div>
 
   <!-- Transaction Table -->
@@ -575,6 +610,7 @@
     // ----- STORAGE -----
     const STORAGE_KEY = 'dailyFinanceEntries';
     const TARGET_KEY = 'savingsTarget';
+    const NAME_KEY = 'userName';
 
     // ----- Helpers -----
     function getEntries() {
@@ -596,6 +632,14 @@
 
     function setTarget(val) {
       localStorage.setItem(TARGET_KEY, String(val));
+    }
+
+    function getUserName() {
+      return localStorage.getItem(NAME_KEY) || '';
+    }
+
+    function setUserName(name) {
+      localStorage.setItem(NAME_KEY, name);
     }
 
     // ----- Render all -----
@@ -725,7 +769,7 @@
       renderList(expenseMap, 'expenseCategoryList', '#b13e3e');
     }
 
-    // ----- Add transaction -----
+    // ----- Add transaction (BATCH MODE: keeps date and type) -----
     function addTransaction() {
       const dateInput = document.getElementById('txDate');
       const typeSelect = document.getElementById('txType');
@@ -754,9 +798,14 @@
       saveEntries(entries);
       renderAll();
 
+      // Clear only category, amount, and reason.
+      // Keep date and type selected for quick batch adding!
       categoryInput.value = '';
       amountInput.value = '';
       reasonInput.value = '';
+      
+      // Focus on category for next entry
+      categoryInput.focus();
     }
 
     // ----- Set target -----
@@ -770,21 +819,60 @@
       renderAll();
     }
 
+    // ----- Name handling -----
+    function loadName() {
+      const input = document.getElementById('userNameInput');
+      const saved = getUserName();
+      if (saved) {
+        input.value = saved;
+      } else {
+        // default if nothing saved
+        input.value = 'Shehan Deemantha';
+        setUserName('Shehan Deemantha');
+      }
+    }
+
+    function saveName() {
+      const input = document.getElementById('userNameInput');
+      const val = input.value.trim();
+      if (val) {
+        setUserName(val);
+      } else {
+        // if empty, set default
+        input.value = 'Shehan Deemantha';
+        setUserName('Shehan Deemantha');
+      }
+    }
+
     // ----- Init -----
     document.addEventListener('DOMContentLoaded', function() {
+      // Load name
+      loadName();
+
+      // Save name on change and blur
+      const nameInput = document.getElementById('userNameInput');
+      nameInput.addEventListener('change', saveName);
+      nameInput.addEventListener('blur', saveName);
+
+      // Set default date to today
       const dateInput = document.getElementById('txDate');
       const today = new Date().toISOString().split('T')[0];
       dateInput.value = today;
 
+      // Load target
       const target = getTarget();
       document.getElementById('targetInput').value = target;
 
+      // Render
       renderAll();
 
+      // Event listeners
       document.getElementById('addBtn').addEventListener('click', addTransaction);
+
       document.getElementById('setTargetBtn').addEventListener('click', updateTarget);
 
-      const inputs = ['txDate', 'txCategory', 'txAmount', 'txReason'];
+      // Enter key on inputs (triggers add)
+      const inputs = ['txCategory', 'txAmount', 'txReason'];
       inputs.forEach(id => {
         const el = document.getElementById(id);
         if (el) {
@@ -796,6 +884,7 @@
           });
         }
       });
+      // Also for target input
       document.getElementById('targetInput').addEventListener('keypress', function(e) {
         if (e.key === 'Enter') {
           e.preventDefault();
