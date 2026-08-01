@@ -8,6 +8,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
   <style>
+    /* ----- ROOT VARIABLES ----- */
     :root {
       --primary: #0f172a;
       --primary-light: #1e293b;
@@ -65,27 +66,122 @@
       border: 1px solid rgba(255,255,255,0.4);
     }
 
-    /* TOP BAR */
-    .top-bar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; margin-bottom: 28px; padding-bottom: 16px; border-bottom: 1px solid var(--gray-200); }
+    /* ---- TOP BAR: Brand + Greeting ---- */
+    .top-bar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 28px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--gray-200);
+      gap: 12px;
+    }
     .brand { display: flex; align-items: center; gap: 12px; }
-    .brand .logo-icon { width: 44px; height: 44px; background: linear-gradient(135deg, var(--secondary), var(--accent)); border-radius: 12px; display: flex; align-items: center; justify-content: center; color: white; font-size: 22px; box-shadow: 0 4px 12px rgba(59,130,246,0.3); }
+    .brand .logo-icon {
+      width: 44px; height: 44px;
+      background: linear-gradient(135deg, var(--secondary), var(--accent));
+      border-radius: 12px; display: flex; align-items: center; justify-content: center;
+      color: white; font-size: 22px;
+      box-shadow: 0 4px 12px rgba(59,130,246,0.3);
+      flex-shrink: 0;
+    }
     .brand h1 { font-size: 24px; font-weight: 700; color: var(--gray-900); letter-spacing: -0.5px; }
     .brand h1 span { font-weight: 400; color: var(--gray-500); font-size: 16px; }
-    .name-input { font: inherit; font-weight: 700; font-size: 24px; color: var(--gray-900); background: transparent; border: none; border-bottom: 2px dashed var(--gray-300); padding: 0 4px; min-width: 140px; outline: none; transition: border-color 0.2s; }
-    .name-input:focus { border-color: var(--secondary); }
-    .name-input::placeholder { color: var(--gray-400); font-weight: 500; font-size: 20px; }
-    .edit-hint { font-size: 11px; color: var(--gray-400); background: var(--gray-100); padding: 2px 10px; border-radius: var(--radius-full); font-weight: 500; border: 1px solid var(--gray-200); margin-left: 4px; }
-    .greeting-box { display: flex; align-items: center; gap: 16px; background: var(--gray-50); padding: 8px 18px 8px 16px; border-radius: var(--radius-full); border: 1px solid var(--gray-200); box-shadow: var(--shadow-sm); }
-    .greeting-box .greeting-icon { font-size: 24px; }
-    .greeting-box .greeting-text { font-weight: 600; color: var(--gray-800); font-size: 15px; }
-    .greeting-box .greeting-text span { color: var(--secondary); }
-    .greeting-box .greeting-time { font-size: 13px; color: var(--gray-500); display: flex; align-items: center; gap: 6px; }
 
-    /* KPI GRID */
-    .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; margin-bottom: 28px; }
-    .kpi-card { background: #ffffff; border-radius: var(--radius); padding: 18px 20px 16px; border: 1px solid var(--gray-200); box-shadow: var(--shadow-sm); transition: all 0.2s ease; position: relative; overflow: hidden; }
+    /* ---- GREETING BOX (Community Focus) ---- */
+    .greeting-box {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: var(--gray-50);
+      padding: 6px 18px 6px 16px;
+      border-radius: var(--radius-full);
+      border: 1px solid var(--gray-200);
+      box-shadow: var(--shadow-sm);
+      transition: all 0.2s ease;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    .greeting-box:hover {
+      border-color: var(--secondary);
+      box-shadow: var(--shadow-md);
+    }
+    .greeting-box .greeting-icon { font-size: 28px; line-height: 1; }
+    .greeting-box .greeting-text {
+      font-weight: 600;
+      color: var(--gray-800);
+      font-size: 16px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+    .greeting-box .greeting-text .name-input {
+      font: inherit;
+      font-weight: 700;
+      font-size: 16px;
+      color: var(--secondary);
+      background: transparent;
+      border: none;
+      border-bottom: 2px dashed var(--gray-300);
+      padding: 0 4px;
+      min-width: 100px;
+      outline: none;
+      transition: border-color 0.2s;
+      max-width: 180px;
+    }
+    .greeting-box .greeting-text .name-input:focus {
+      border-color: var(--secondary);
+    }
+    .greeting-box .greeting-text .name-input::placeholder {
+      color: var(--gray-400);
+      font-weight: 500;
+      font-size: 15px;
+    }
+    .greeting-box .greeting-time {
+      font-size: 13px;
+      color: var(--gray-500);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding-left: 8px;
+      border-left: 1px solid var(--gray-200);
+    }
+    .greeting-box .edit-hint {
+      font-size: 11px;
+      color: var(--gray-400);
+      background: var(--gray-200);
+      padding: 2px 10px;
+      border-radius: var(--radius-full);
+      font-weight: 500;
+      border: 1px solid var(--gray-300);
+      white-space: nowrap;
+    }
+
+    /* ---- KPI GRID ---- */
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 16px;
+      margin-bottom: 28px;
+    }
+    .kpi-card {
+      background: #ffffff;
+      border-radius: var(--radius);
+      padding: 18px 20px 16px;
+      border: 1px solid var(--gray-200);
+      box-shadow: var(--shadow-sm);
+      transition: all 0.2s ease;
+      position: relative;
+      overflow: hidden;
+    }
     .kpi-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-lg); border-color: var(--gray-300); }
-    .kpi-card .label { font-size: 12px; font-weight: 600; color: var(--gray-500); text-transform: uppercase; letter-spacing: 0.5px; display: flex; align-items: center; gap: 8px; }
+    .kpi-card .label {
+      font-size: 12px; font-weight: 600; color: var(--gray-500);
+      text-transform: uppercase; letter-spacing: 0.5px;
+      display: flex; align-items: center; gap: 8px;
+    }
     .kpi-card .label i { font-size: 14px; background: var(--gray-100); padding: 4px; border-radius: 8px; }
     .kpi-card .value { font-size: 28px; font-weight: 700; margin-top: 6px; color: var(--gray-900); letter-spacing: -0.3px; }
     .kpi-card .sub { font-size: 12px; color: var(--gray-400); margin-top: 4px; font-weight: 500; }
@@ -100,7 +196,7 @@
     .kpi-card.expense-rate .label i { color: var(--info); background: #ecfeff; }
     .kpi-card.expense-rate .value { color: var(--info); }
 
-    /* CHART SECTION - 2 charts side by side */
+    /* ---- CHARTS ROW ---- */
     .charts-row {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -108,7 +204,6 @@
       margin-bottom: 28px;
     }
     @media (max-width: 820px) { .charts-row { grid-template-columns: 1fr; } }
-
     .chart-card {
       background: var(--gray-50);
       border-radius: var(--radius-lg);
@@ -117,42 +212,19 @@
       box-shadow: var(--shadow-sm);
     }
     .chart-card .chart-title {
-      font-size: 15px;
-      font-weight: 600;
-      color: var(--gray-700);
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      margin-bottom: 14px;
+      font-size: 15px; font-weight: 600; color: var(--gray-700);
+      display: flex; align-items: center; gap: 10px; margin-bottom: 14px;
     }
-    .chart-card .chart-title i {
-      color: var(--secondary);
-      background: #dbeafe;
-      padding: 6px;
-      border-radius: 10px;
-      font-size: 16px;
-    }
+    .chart-card .chart-title i { color: var(--secondary); background: #dbeafe; padding: 6px; border-radius: 10px; font-size: 16px; }
     .chart-wrapper { max-width: 280px; margin: 0 auto; position: relative; }
     .chart-wrapper canvas { width: 100% !important; height: auto !important; }
 
-    /* Chart stats below each chart */
-    .chart-stats {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      margin-top: 16px;
-    }
+    .chart-stats { display: flex; flex-direction: column; gap: 10px; margin-top: 16px; }
     .stat-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 10px 16px;
-      background: #ffffff;
-      border-radius: var(--radius);
-      border: 1px solid var(--gray-200);
-      box-shadow: var(--shadow-sm);
-      transition: 0.15s;
-      font-size: 14px;
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 10px 16px; background: #ffffff; border-radius: var(--radius);
+      border: 1px solid var(--gray-200); box-shadow: var(--shadow-sm);
+      transition: 0.15s; font-size: 14px;
     }
     .stat-row:hover { border-color: var(--gray-300); }
     .stat-row .label { display: flex; align-items: center; gap: 10px; font-weight: 500; color: var(--gray-600); }
@@ -163,59 +235,24 @@
     .stat-row .amount.accent { color: var(--accent); }
     .stat-row.net-row { background: #f5f3ff; border-color: #ddd6fe; }
 
-    /* Expense category legend - shows top categories */
-    .expense-legend {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px 16px;
-      margin-top: 12px;
-      padding-top: 12px;
-      border-top: 1px solid var(--gray-200);
-    }
-    .expense-legend .legend-item {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      font-size: 13px;
-      color: var(--gray-600);
-    }
-    .expense-legend .legend-item .dot {
-      width: 10px;
-      height: 10px;
-      border-radius: 50%;
-      flex-shrink: 0;
-    }
-    .expense-legend .legend-item .pct {
-      font-weight: 600;
-      color: var(--gray-700);
-    }
-    .no-expense-msg {
-      color: var(--gray-400);
-      font-style: italic;
-      text-align: center;
-      padding: 20px 0;
-      font-size: 14px;
-    }
+    .expense-legend { display: flex; flex-wrap: wrap; gap: 8px 16px; margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--gray-200); }
+    .expense-legend .legend-item { display: flex; align-items: center; gap: 6px; font-size: 13px; color: var(--gray-600); }
+    .expense-legend .legend-item .dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+    .expense-legend .legend-item .pct { font-weight: 600; color: var(--gray-700); }
+    .no-expense-msg { color: var(--gray-400); font-style: italic; text-align: center; padding: 20px 0; font-size: 14px; }
 
-    /* GAUGE */
+    /* ---- GAUGE ---- */
     .gauge-section {
-      background: var(--gray-50);
-      border-radius: var(--radius-lg);
-      padding: 18px 24px;
-      margin-bottom: 28px;
-      border: 1px solid var(--gray-200);
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      justify-content: space-between;
-      gap: 16px;
+      background: var(--gray-50); border-radius: var(--radius-lg); padding: 18px 24px;
+      margin-bottom: 28px; border: 1px solid var(--gray-200);
+      display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px;
       box-shadow: var(--shadow-sm);
     }
     .gauge-info { display: flex; align-items: center; gap: 24px; flex: 1; flex-wrap: wrap; }
     .gauge-label { font-weight: 600; color: var(--gray-700); font-size: 14px; display: flex; align-items: center; gap: 8px; }
     .gauge-label span { background: #dbeafe; color: var(--secondary); padding: 2px 14px; border-radius: var(--radius-full); font-size: 13px; font-weight: 700; border: 1px solid #bfdbfe; }
     .gauge-wrapper { display: flex; align-items: center; gap: 18px; flex: 2; min-width: 180px; }
-    .gauge-bar-bg { flex: 1; height: 8px; background: var(--gray-200); border-radius: var(--radius-full); overflow: hidden; box-shadow: inset 0 1px 2px rgba(0,0,0,0.05); }
+    .gauge-bar-bg { flex: 1; height: 8px; background: var(--gray-200); border-radius: var(--radius-full); overflow: hidden; }
     .gauge-bar-fill { height: 100%; width: 0%; border-radius: var(--radius-full); background: linear-gradient(90deg, var(--secondary), var(--accent)); transition: width 0.6s cubic-bezier(0.4,0,0.2,1); }
     .gauge-percent { font-weight: 700; font-size: 18px; color: var(--gray-900); min-width: 50px; text-align: right; }
     .gauge-status { font-size: 13px; font-weight: 600; padding: 5px 16px; border-radius: var(--radius-full); background: var(--gray-200); color: var(--gray-700); border: 1px solid var(--gray-300); white-space: nowrap; }
@@ -228,17 +265,11 @@
     .target-input-area button { background: var(--primary); color: white; border: none; padding: 6px 18px; border-radius: var(--radius-full); font-weight: 600; font-size: 13px; cursor: pointer; transition: 0.15s; }
     .target-input-area button:hover { background: var(--gray-800); transform: scale(1.02); }
 
-    /* FORM */
+    /* ---- FORM ---- */
     .form-row {
-      background: var(--gray-50);
-      border: 1px solid var(--gray-200);
-      border-radius: var(--radius-lg);
-      padding: 18px 22px;
-      margin-bottom: 28px;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 12px 18px;
-      align-items: flex-end;
+      background: var(--gray-50); border: 1px solid var(--gray-200); border-radius: var(--radius-lg);
+      padding: 18px 22px; margin-bottom: 28px;
+      display: flex; flex-wrap: wrap; gap: 12px 18px; align-items: flex-end;
       box-shadow: var(--shadow-sm);
     }
     .form-row .field { display: flex; flex-direction: column; gap: 4px; flex: 1 0 120px; }
@@ -250,7 +281,7 @@
     .form-row .btn-add i { font-size: 16px; }
     .form-row .batch-hint { font-size: 12px; color: var(--gray-400); background: #ffffff; padding: 4px 14px; border-radius: var(--radius-full); border: 1px solid var(--gray-200); white-space: nowrap; }
 
-    /* TABLE */
+    /* ---- TABLE ---- */
     .table-wrap { overflow-x: auto; border-radius: var(--radius); border: 1px solid var(--gray-200); background: #ffffff; box-shadow: var(--shadow-sm); }
     .transaction-table { width: 100%; border-collapse: separate; border-spacing: 0; font-size: 14px; }
     .transaction-table th { text-align: left; padding: 14px 12px 14px 16px; background: var(--gray-50); color: var(--gray-600); font-weight: 600; font-size: 12px; text-transform: uppercase; letter-spacing: 0.4px; border-bottom: 1px solid var(--gray-200); }
@@ -267,7 +298,7 @@
     .transaction-table .delete-btn:hover { background: #fef2f2; color: var(--danger); }
     .empty-msg { text-align: center; color: var(--gray-400); padding: 32px 0; font-style: italic; }
 
-    /* CATEGORY BREAKDOWN (text) */
+    /* ---- CATEGORY BREAKDOWN ---- */
     .category-breakdown { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-top: 28px; }
     @media (max-width: 600px) { .category-breakdown { grid-template-columns: 1fr; } }
     .cat-section { background: #ffffff; border-radius: var(--radius); padding: 18px 22px; border: 1px solid var(--gray-200); box-shadow: var(--shadow-sm); }
@@ -278,7 +309,7 @@
     .cat-item .cat-name { color: var(--gray-600); font-weight: 500; }
     .cat-item .cat-amount { font-weight: 600; color: var(--gray-800); }
 
-    /* GOALS */
+    /* ---- GOALS ---- */
     .goals-section { margin-top: 32px; background: var(--gray-50); border-radius: var(--radius-lg); padding: 24px 28px; border: 1px solid var(--gray-200); box-shadow: var(--shadow-sm); }
     .goals-header { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; margin-bottom: 20px; }
     .goals-header h3 { font-size: 18px; font-weight: 700; color: var(--gray-800); display: flex; align-items: center; gap: 12px; }
@@ -311,7 +342,7 @@
     .goal-card .goal-delete:hover { background: #fef2f2; color: var(--danger); }
     .no-goals-msg { color: var(--gray-400); font-style: italic; padding: 30px 0; text-align: center; grid-column: 1 / -1; }
 
-    /* WEEKLY REPORT */
+    /* ---- WEEKLY REPORT ---- */
     .weekly-report { margin-top: 32px; background: var(--gray-50); border-radius: var(--radius-lg); padding: 24px 28px; border: 1px solid var(--gray-200); box-shadow: var(--shadow-sm); }
     .report-header { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 18px; }
     .report-header h3 { font-size: 18px; font-weight: 700; color: var(--gray-800); display: flex; align-items: center; gap: 12px; }
@@ -340,11 +371,13 @@
 
     .footer-note { margin-top: 28px; text-align: right; font-size: 13px; color: var(--gray-400); border-top: 1px solid var(--gray-200); padding-top: 18px; }
 
-    /* RESPONSIVE */
+    /* ---- RESPONSIVE ---- */
     @media (max-width: 768px) {
       .container { padding: 18px 16px; }
       .top-bar { flex-direction: column; align-items: stretch; gap: 12px; }
-      .greeting-box { justify-content: center; }
+      .greeting-box { justify-content: center; flex-wrap: wrap; }
+      .greeting-box .greeting-text { font-size: 15px; }
+      .greeting-box .greeting-text .name-input { font-size: 15px; min-width: 80px; max-width: 140px; }
       .kpi-grid { grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); }
       .form-row .btn-add { width: 100%; justify-content: center; margin-left: 0; }
       .gauge-section { flex-direction: column; align-items: stretch; }
@@ -362,20 +395,20 @@
 
 <div class="container">
 
-  <!-- TOP BAR -->
+  <!-- TOP BAR: Brand + Greeting -->
   <div class="top-bar">
     <div class="brand">
       <div class="logo-icon"><i class="fas fa-wallet"></i></div>
-      <h1>
-        <input type="text" id="userNameInput" class="name-input" value="Shehan Deemantha" placeholder="Your Name" />
-        <span>· Finance Pro</span>
-      </h1>
-      <span class="edit-hint"><i class="fas fa-pen"></i> edit</span>
+      <h1>Finance <span>Pro</span></h1>
     </div>
     <div class="greeting-box">
       <span class="greeting-icon" id="greetingIcon">🌅</span>
-      <span class="greeting-text" id="greetingText">Good Morning, <span id="greetingName">Shehan</span></span>
+      <span class="greeting-text" id="greetingText">
+        <span>Good Morning,</span>
+        <input type="text" id="userNameInput" class="name-input" placeholder="your name" value="Shehan Deemantha" />
+      </span>
       <span class="greeting-time"><i class="far fa-clock"></i> <span id="greetingTime"></span></span>
+      <span class="edit-hint"><i class="fas fa-pen"></i> edit</span>
     </div>
   </div>
 
@@ -401,13 +434,11 @@
       </div>
     </div>
 
-    <!-- Chart 2: Expense Breakdown by Category (NEW) -->
+    <!-- Chart 2: Expense Breakdown by Category -->
     <div class="chart-card">
       <div class="chart-title"><i class="fas fa-chart-pie" style="color:var(--danger);"></i> Expense Breakdown</div>
       <div class="chart-wrapper"><canvas id="expenseCategoryChart"></canvas></div>
-      <div id="expenseLegendContainer">
-        <!-- dynamically filled -->
-      </div>
+      <div id="expenseLegendContainer"></div>
     </div>
   </div>
 
@@ -447,7 +478,7 @@
     </table>
   </div>
 
-  <!-- CATEGORY BREAKDOWN (text) -->
+  <!-- CATEGORY BREAKDOWN -->
   <div class="category-breakdown">
     <div class="cat-section"><h4><i class="fas fa-arrow-up" style="color:var(--success);"></i> Income by Category</h4><div id="incomeCategoryList"></div></div>
     <div class="cat-section"><h4><i class="fas fa-arrow-down" style="color:var(--danger);"></i> Expenses by Category</h4><div id="expenseCategoryList"></div></div>
@@ -519,17 +550,14 @@
     let chartIncomeExpense = null;
     let chartExpenseCategory = null;
 
-    // Predefined colors for expense categories
     const categoryColors = [
       '#3b82f6', '#8b5cf6', '#ec4899', '#f59e0b', '#10b981',
       '#06b6d4', '#f97316', '#14b8a6', '#6366f1', '#d946ef',
       '#84cc16', '#e11d48', '#0ea5e9', '#8b5cf6', '#22c55e'
     ];
-
     function getColor(index) { return categoryColors[index % categoryColors.length]; }
 
     function initCharts() {
-      // Chart 1: Income vs Expenses
       const ctx1 = document.getElementById('incomeExpenseChart').getContext('2d');
       chartIncomeExpense = new Chart(ctx1, {
         type: 'doughnut',
@@ -558,7 +586,6 @@
         }
       });
 
-      // Chart 2: Expense Category Breakdown
       const ctx2 = document.getElementById('expenseCategoryChart').getContext('2d');
       chartExpenseCategory = new Chart(ctx2, {
         type: 'doughnut',
@@ -600,13 +627,11 @@
     function updateCharts() {
       const { totalIncome, totalExpenses } = computeTotals();
 
-      // Update Income vs Expenses chart
       if (chartIncomeExpense) {
         chartIncomeExpense.data.datasets[0].data = [totalIncome, totalExpenses];
         chartIncomeExpense.update();
       }
 
-      // Update Expense Category chart
       const entries = getEntries();
       const expenseMap = {};
       entries.forEach(e => {
@@ -630,13 +655,11 @@
         chartExpenseCategory.update();
       }
 
-      // Update legend for expense chart
       const container = document.getElementById('expenseLegendContainer');
       const totalExp = data.reduce((a, b) => a + b, 0);
       if (labels.length === 0 || totalExp === 0) {
         container.innerHTML = `<div class="no-expense-msg"><i class="far fa-receipt"></i> No expenses logged yet</div>`;
       } else {
-        // Show top 5 categories + "Other" if more than 5
         let sorted = labels.map((label, i) => ({ label, value: data[i], pct: (data[i] / totalExp) * 100 }));
         sorted.sort((a, b) => b.value - a.value);
         let top = sorted.slice(0, 5);
@@ -661,13 +684,12 @@
         container.innerHTML = html;
       }
 
-      // Update chart stats (Income vs Expenses)
       document.getElementById('chartIncome').textContent = 'LKR ' + totalIncome.toLocaleString(undefined, { maximumFractionDigits: 2 });
       document.getElementById('chartExpenses').textContent = 'LKR ' + totalExpenses.toLocaleString(undefined, { maximumFractionDigits: 2 });
       document.getElementById('chartNet').textContent = 'LKR ' + (totalIncome - totalExpenses).toLocaleString(undefined, { maximumFractionDigits: 2 });
     }
 
-    // ----- Greeting -----
+    // ----- Greeting & Name Logic (Community Ready) -----
     function updateGreeting() {
       const now = new Date();
       const hours = now.getHours();
@@ -676,8 +698,36 @@
       else if (hours < 17) { greeting = 'Good Afternoon'; icon = '☀️'; }
       else if (hours < 21) { greeting = 'Good Evening'; icon = '🌇'; }
       else { greeting = 'Good Night'; icon = '🌙'; }
-      const name = getUserName() || 'Shehan';
-      document.getElementById('greetingText').innerHTML = greeting + ', <span id="greetingName">' + name + '</span>';
+
+      // Get name from input or localStorage
+      const input = document.getElementById('userNameInput');
+      let name = input.value.trim();
+      if (!name) {
+        // Fallback to stored name or empty
+        const stored = getUserName();
+        if (stored) name = stored;
+        else name = '';
+      }
+
+      // Update the greeting text: "Good Morning, [Name]"
+      const greetingSpan = document.getElementById('greetingText');
+      if (name) {
+        greetingSpan.innerHTML = `<span>${greeting},</span> <input type="text" id="userNameInput" class="name-input" placeholder="your name" value="${name}" />`;
+      } else {
+        greetingSpan.innerHTML = `<span>${greeting},</span> <input type="text" id="userNameInput" class="name-input" placeholder="your name" value="" />`;
+      }
+
+      // Re-bind the input event listener
+      const newInput = document.getElementById('userNameInput');
+      if (newInput) {
+        newInput.addEventListener('change', saveName);
+        newInput.addEventListener('blur', saveName);
+        // If the name was empty, focus it after a tiny delay to prompt the user
+        if (!name) {
+          setTimeout(() => newInput.focus(), 100);
+        }
+      }
+
       document.getElementById('greetingIcon').textContent = icon;
       document.getElementById('greetingTime').textContent = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
     }
@@ -697,7 +747,6 @@
       document.getElementById('savingsRate').textContent = savingsRate.toFixed(1) + '%';
       document.getElementById('expenseRate').textContent = expenseRate.toFixed(1) + '%';
 
-      // Gauge
       document.getElementById('targetLabel').textContent = target + '%';
       document.getElementById('displayTarget').textContent = target;
       const gaugeFill = document.getElementById('gaugeFill');
@@ -977,37 +1026,68 @@
     }
 
     // ----- Name handling -----
-    function loadName() {
-      const input = document.getElementById('userNameInput');
-      const saved = getUserName();
-      if (saved) input.value = saved;
-      else { input.value = 'Shehan Deemantha'; setUserName('Shehan Deemantha'); }
-      updateGreeting();
-    }
     function saveName() {
       const input = document.getElementById('userNameInput');
+      if (!input) return;
       const val = input.value.trim();
-      if (val) setUserName(val);
-      else { input.value = 'Shehan Deemantha'; setUserName('Shehan Deemantha'); }
+      if (val) {
+        setUserName(val);
+      } else {
+        // If empty, clear the stored name
+        localStorage.removeItem(NAME_KEY);
+      }
+      // Re-run greeting to update the display
+      updateGreeting();
+    }
+
+    function loadName() {
+      const saved = getUserName();
+      const input = document.getElementById('userNameInput');
+      if (input) {
+        if (saved) {
+          input.value = saved;
+        } else {
+          input.value = '';
+          input.placeholder = 'your name';
+          // Focus the input if empty to prompt the user
+          setTimeout(() => input.focus(), 200);
+        }
+      }
       updateGreeting();
     }
 
     // ----- Init -----
     document.addEventListener('DOMContentLoaded', function() {
-      loadName();
-      const nameInput = document.getElementById('userNameInput');
-      nameInput.addEventListener('change', saveName);
-      nameInput.addEventListener('blur', saveName);
-
+      // Set default date
       document.getElementById('txDate').value = new Date().toISOString().split('T')[0];
+
+      // Load target
       document.getElementById('targetInput').value = getTarget();
 
+      // Initialize Charts
       initCharts();
+
+      // Load name and render everything
+      loadName();
       renderAll();
       generateWeeklyReport();
 
+      // Auto-save name on change
+      document.addEventListener('change', function(e) {
+        if (e.target && e.target.id === 'userNameInput') {
+          saveName();
+        }
+      });
+      document.addEventListener('blur', function(e) {
+        if (e.target && e.target.id === 'userNameInput') {
+          saveName();
+        }
+      });
+
+      // Update greeting every minute
       setInterval(updateGreeting, 60000);
 
+      // Event listeners
       document.getElementById('addBtn').addEventListener('click', addTransaction);
       document.getElementById('setTargetBtn').addEventListener('click', updateTarget);
       document.getElementById('generateReportBtn').addEventListener('click', generateWeeklyReport);
