@@ -89,7 +89,7 @@
     .brand h1 { font-size: 24px; font-weight: 700; color: var(--gray-900); letter-spacing: -0.5px; }
     .brand h1 span { font-weight: 400; color: var(--gray-500); font-size: 16px; }
 
-    /* ---- GREETING BOX (Community Focus) ---- */
+    /* ---- GREETING BOX ---- */
     .greeting-box {
       display: flex;
       align-items: center;
@@ -103,60 +103,29 @@
       flex-wrap: wrap;
       justify-content: center;
     }
-    .greeting-box:hover {
-      border-color: var(--secondary);
-      box-shadow: var(--shadow-md);
-    }
+    .greeting-box:hover { border-color: var(--secondary); box-shadow: var(--shadow-md); }
     .greeting-box .greeting-icon { font-size: 28px; line-height: 1; }
     .greeting-box .greeting-text {
-      font-weight: 600;
-      color: var(--gray-800);
-      font-size: 16px;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      flex-wrap: wrap;
+      font-weight: 600; color: var(--gray-800); font-size: 16px;
+      display: flex; align-items: center; gap: 6px; flex-wrap: wrap;
     }
     .greeting-box .greeting-text .name-input {
-      font: inherit;
-      font-weight: 700;
-      font-size: 16px;
-      color: var(--secondary);
-      background: transparent;
-      border: none;
-      border-bottom: 2px dashed var(--gray-300);
-      padding: 0 4px;
-      min-width: 100px;
-      outline: none;
-      transition: border-color 0.2s;
+      font: inherit; font-weight: 700; font-size: 16px; color: var(--secondary);
+      background: transparent; border: none; border-bottom: 2px dashed var(--gray-300);
+      padding: 0 4px; min-width: 100px; outline: none; transition: border-color 0.2s;
       max-width: 180px;
     }
-    .greeting-box .greeting-text .name-input:focus {
-      border-color: var(--secondary);
-    }
-    .greeting-box .greeting-text .name-input::placeholder {
-      color: var(--gray-400);
-      font-weight: 500;
-      font-size: 15px;
-    }
+    .greeting-box .greeting-text .name-input:focus { border-color: var(--secondary); }
+    .greeting-box .greeting-text .name-input::placeholder { color: var(--gray-400); font-weight: 500; font-size: 15px; }
     .greeting-box .greeting-time {
-      font-size: 13px;
-      color: var(--gray-500);
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      padding-left: 8px;
-      border-left: 1px solid var(--gray-200);
+      font-size: 13px; color: var(--gray-500);
+      display: flex; align-items: center; gap: 6px;
+      padding-left: 8px; border-left: 1px solid var(--gray-200);
     }
     .greeting-box .edit-hint {
-      font-size: 11px;
-      color: var(--gray-400);
-      background: var(--gray-200);
-      padding: 2px 10px;
-      border-radius: var(--radius-full);
-      font-weight: 500;
-      border: 1px solid var(--gray-300);
-      white-space: nowrap;
+      font-size: 11px; color: var(--gray-400); background: var(--gray-200);
+      padding: 2px 10px; border-radius: var(--radius-full); font-weight: 500;
+      border: 1px solid var(--gray-300); white-space: nowrap;
     }
 
     /* ---- KPI GRID ---- */
@@ -369,7 +338,47 @@
     .detail-cat .cat-row:last-child { border-bottom: none; }
     .no-data-msg { color: var(--gray-400); font-style: italic; text-align: center; padding: 30px 0; }
 
-    .footer-note { margin-top: 28px; text-align: right; font-size: 13px; color: var(--gray-400); border-top: 1px solid var(--gray-200); padding-top: 18px; }
+    /* ---- FOOTER ---- */
+    .footer-note {
+      margin-top: 28px;
+      padding-top: 18px;
+      border-top: 1px solid var(--gray-200);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .footer-note .left {
+      font-size: 13px;
+      color: var(--gray-400);
+    }
+    .footer-note .left i {
+      margin-right: 6px;
+    }
+    .reset-btn {
+      background: none;
+      border: none;
+      color: var(--gray-400);
+      cursor: pointer;
+      font-size: 13px;
+      padding: 6px 16px;
+      border-radius: var(--radius-full);
+      transition: all 0.15s;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-weight: 500;
+      border: 1px solid transparent;
+    }
+    .reset-btn:hover {
+      background: #fef2f2;
+      color: var(--danger);
+      border-color: #fca5a5;
+    }
+    .reset-btn i {
+      font-size: 14px;
+    }
 
     /* ---- RESPONSIVE ---- */
     @media (max-width: 768px) {
@@ -388,6 +397,7 @@
       .report-actions button { flex: 1; justify-content: center; }
       .add-goal-form .btn-add-goal { width: 100%; justify-content: center; }
       .charts-row { grid-template-columns: 1fr; }
+      .footer-note { flex-direction: column; align-items: center; text-align: center; }
     }
   </style>
 </head>
@@ -395,7 +405,7 @@
 
 <div class="container">
 
-  <!-- TOP BAR: Brand + Greeting -->
+  <!-- TOP BAR -->
   <div class="top-bar">
     <div class="brand">
       <div class="logo-icon"><i class="fas fa-wallet"></i></div>
@@ -423,7 +433,6 @@
 
   <!-- TWO CHARTS ROW -->
   <div class="charts-row">
-    <!-- Chart 1: Income vs Expenses -->
     <div class="chart-card">
       <div class="chart-title"><i class="fas fa-chart-pie"></i> Income vs Expenses</div>
       <div class="chart-wrapper"><canvas id="incomeExpenseChart"></canvas></div>
@@ -433,8 +442,6 @@
         <div class="stat-row net-row"><span class="label"><i class="fas fa-piggy-bank" style="color:var(--accent);"></i> Net</span><span class="amount accent" id="chartNet">LKR 0</span></div>
       </div>
     </div>
-
-    <!-- Chart 2: Expense Breakdown by Category -->
     <div class="chart-card">
       <div class="chart-title"><i class="fas fa-chart-pie" style="color:var(--danger);"></i> Expense Breakdown</div>
       <div class="chart-wrapper"><canvas id="expenseCategoryChart"></canvas></div>
@@ -509,17 +516,33 @@
     <div class="report-content" id="reportContent"></div>
   </div>
 
-  <div class="footer-note"><i class="fas fa-database"></i> Data stored locally in your browser</div>
+  <!-- FOOTER WITH RESET BUTTON -->
+  <div class="footer-note">
+    <span class="left"><i class="fas fa-database"></i> Data stored locally in your browser</span>
+    <button class="reset-btn" id="resetDataBtn"><i class="fas fa-trash-alt"></i> Reset All Data</button>
+  </div>
 </div>
 
 <script>
   (function() {
-    // ----- STORAGE -----
+    // ----- STORAGE KEYS -----
     const STORAGE_KEY = 'dailyFinanceEntries';
     const TARGET_KEY = 'savingsTarget';
     const NAME_KEY = 'userName';
     const GOALS_KEY = 'financeGoals';
 
+    // ----- RESET FUNCTION -----
+    window.resetAllData = function() {
+      if (confirm('⚠️ Are you sure you want to delete ALL your data? This cannot be undone.')) {
+        localStorage.removeItem(STORAGE_KEY);
+        localStorage.removeItem(TARGET_KEY);
+        localStorage.removeItem(NAME_KEY);
+        localStorage.removeItem(GOALS_KEY);
+        location.reload();
+      }
+    };
+
+    // ----- STORAGE HELPERS -----
     function getEntries() {
       try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || []; } catch { return []; }
     }
@@ -546,7 +569,7 @@
       return { totalIncome, totalExpenses, net: totalIncome - totalExpenses };
     }
 
-    // ----- Chart instances -----
+    // ----- CHART INSTANCES -----
     let chartIncomeExpense = null;
     let chartExpenseCategory = null;
 
@@ -689,7 +712,7 @@
       document.getElementById('chartNet').textContent = 'LKR ' + (totalIncome - totalExpenses).toLocaleString(undefined, { maximumFractionDigits: 2 });
     }
 
-    // ----- Greeting & Name Logic (Community Ready) -----
+    // ----- GREETING -----
     function updateGreeting() {
       const now = new Date();
       const hours = now.getHours();
@@ -699,17 +722,14 @@
       else if (hours < 21) { greeting = 'Good Evening'; icon = '🌇'; }
       else { greeting = 'Good Night'; icon = '🌙'; }
 
-      // Get name from input or localStorage
       const input = document.getElementById('userNameInput');
       let name = input.value.trim();
       if (!name) {
-        // Fallback to stored name or empty
         const stored = getUserName();
         if (stored) name = stored;
         else name = '';
       }
 
-      // Update the greeting text: "Good Morning, [Name]"
       const greetingSpan = document.getElementById('greetingText');
       if (name) {
         greetingSpan.innerHTML = `<span>${greeting},</span> <input type="text" id="userNameInput" class="name-input" placeholder="your name" value="${name}" />`;
@@ -717,12 +737,10 @@
         greetingSpan.innerHTML = `<span>${greeting},</span> <input type="text" id="userNameInput" class="name-input" placeholder="your name" value="" />`;
       }
 
-      // Re-bind the input event listener
       const newInput = document.getElementById('userNameInput');
       if (newInput) {
         newInput.addEventListener('change', saveName);
         newInput.addEventListener('blur', saveName);
-        // If the name was empty, focus it after a tiny delay to prompt the user
         if (!name) {
           setTimeout(() => newInput.focus(), 100);
         }
@@ -732,7 +750,7 @@
       document.getElementById('greetingTime').textContent = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
     }
 
-    // ----- Render All -----
+    // ----- RENDER ALL -----
     function renderAll() {
       const entries = getEntries();
       const target = getTarget();
@@ -770,7 +788,6 @@
 
       updateCharts();
 
-      // Transaction table
       const tbody = document.getElementById('txBody');
       if (entries.length === 0) {
         tbody.innerHTML = `<tr><td colspan="6" class="empty-msg"><i class="far fa-hourglass"></i> No transactions yet. Add your first one!</td></tr>`;
@@ -846,7 +863,7 @@
       renderList(expenseMap, 'expenseCategoryList');
     }
 
-    // ----- Goals -----
+    // ----- GOALS -----
     function renderGoals() {
       const goals = getGoals();
       const { totalIncome, totalExpenses, net } = computeTotals();
@@ -913,7 +930,7 @@
       renderGoals();
     }
 
-    // ----- Weekly Report -----
+    // ----- WEEKLY REPORT -----
     function generateWeeklyReport() {
       const entries = getEntries();
       const container = document.getElementById('reportContent');
@@ -958,7 +975,7 @@
       container.innerHTML = html;
     }
 
-    // ----- Email -----
+    // ----- EMAIL -----
     function sendReportViaEmail() {
       const entries = getEntries();
       if (entries.length === 0) { alert('No transactions to report.'); return; }
@@ -993,7 +1010,7 @@
       window.location.href = `mailto:?subject=${subject}&body=${bodyEncoded}`;
     }
 
-    // ----- Add transaction -----
+    // ----- ADD TRANSACTION -----
     function addTransaction() {
       const date = document.getElementById('txDate').value.trim();
       const type = document.getElementById('txType').value;
@@ -1014,7 +1031,7 @@
       document.getElementById('txCategory').focus();
     }
 
-    // ----- Set target -----
+    // ----- SET TARGET -----
     function updateTarget() {
       const input = document.getElementById('targetInput');
       let val = parseFloat(input.value);
@@ -1025,7 +1042,7 @@
       renderAll();
     }
 
-    // ----- Name handling -----
+    // ----- NAME HANDLING -----
     function saveName() {
       const input = document.getElementById('userNameInput');
       if (!input) return;
@@ -1033,10 +1050,8 @@
       if (val) {
         setUserName(val);
       } else {
-        // If empty, clear the stored name
         localStorage.removeItem(NAME_KEY);
       }
-      // Re-run greeting to update the display
       updateGreeting();
     }
 
@@ -1049,30 +1064,28 @@
         } else {
           input.value = '';
           input.placeholder = 'your name';
-          // Focus the input if empty to prompt the user
           setTimeout(() => input.focus(), 200);
         }
       }
       updateGreeting();
     }
 
-    // ----- Init -----
+    // ----- INIT -----
     document.addEventListener('DOMContentLoaded', function() {
-      // Set default date
-      document.getElementById('txDate').value = new Date().toISOString().split('T')[0];
+      // Reset button listener
+      document.getElementById('resetDataBtn').addEventListener('click', function(e) {
+        e.preventDefault();
+        window.resetAllData();
+      });
 
-      // Load target
+      document.getElementById('txDate').value = new Date().toISOString().split('T')[0];
       document.getElementById('targetInput').value = getTarget();
 
-      // Initialize Charts
       initCharts();
-
-      // Load name and render everything
       loadName();
       renderAll();
       generateWeeklyReport();
 
-      // Auto-save name on change
       document.addEventListener('change', function(e) {
         if (e.target && e.target.id === 'userNameInput') {
           saveName();
@@ -1084,10 +1097,8 @@
         }
       });
 
-      // Update greeting every minute
       setInterval(updateGreeting, 60000);
 
-      // Event listeners
       document.getElementById('addBtn').addEventListener('click', addTransaction);
       document.getElementById('setTargetBtn').addEventListener('click', updateTarget);
       document.getElementById('generateReportBtn').addEventListener('click', generateWeeklyReport);
