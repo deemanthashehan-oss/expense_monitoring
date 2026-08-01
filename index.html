@@ -339,7 +339,37 @@
     .detail-cat .cat-row:last-child { border-bottom: none; }
     .no-data-msg { color: var(--gray-400); font-style: italic; text-align: center; padding: 30px 0; }
 
-    /* ---- FOOTER WITH RESET BUTTON (HIGHLIGHTED) ---- */
+    /* ---- TOAST NOTIFICATION (NEW) ---- */
+    .toast {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      background: var(--gray-900);
+      color: white;
+      padding: 14px 24px;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-xl);
+      font-size: 14px;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      z-index: 999;
+      transform: translateY(100px);
+      opacity: 0;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      max-width: 420px;
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+    .toast.show {
+      transform: translateY(0);
+      opacity: 1;
+    }
+    .toast.success { background: var(--success); }
+    .toast.error { background: var(--danger); }
+    .toast i { font-size: 20px; }
+
+    /* ---- FOOTER WITH RESET BUTTON ---- */
     .footer-note {
       margin-top: 28px;
       padding-top: 18px;
@@ -358,7 +388,6 @@
       margin-right: 6px;
     }
 
-    /* ---- HIGHLIGHTED RESET BUTTON ---- */
     .reset-btn {
       background: linear-gradient(135deg, var(--danger), var(--danger-dark));
       color: white;
@@ -375,17 +404,13 @@
       box-shadow: 0 4px 14px rgba(239, 68, 68, 0.35);
       border: 1px solid rgba(255,255,255,0.15);
     }
-    .reset-btn i {
-      font-size: 16px;
-    }
+    .reset-btn i { font-size: 16px; }
     .reset-btn:hover {
       transform: translateY(-2px) scale(1.02);
       box-shadow: 0 8px 25px rgba(239, 68, 68, 0.5);
       background: linear-gradient(135deg, #dc2626, #b91c1c);
     }
-    .reset-btn:active {
-      transform: scale(0.96);
-    }
+    .reset-btn:active { transform: scale(0.96); }
 
     /* ---- RESPONSIVE ---- */
     @media (max-width: 768px) {
@@ -406,6 +431,7 @@
       .charts-row { grid-template-columns: 1fr; }
       .footer-note { flex-direction: column; align-items: center; text-align: center; }
       .reset-btn { width: 100%; justify-content: center; }
+      .toast { bottom: 20px; right: 20px; left: 20px; max-width: none; }
     }
   </style>
 </head>
@@ -524,7 +550,7 @@
     <div class="report-content" id="reportContent"></div>
   </div>
 
-  <!-- FOOTER WITH HIGHLIGHTED RESET BUTTON -->
+  <!-- FOOTER -->
   <div class="footer-note">
     <span class="left"><i class="fas fa-database"></i> Data stored locally in your browser</span>
     <button class="reset-btn" id="resetDataBtn">
@@ -533,8 +559,35 @@
   </div>
 </div>
 
+<!-- TOAST NOTIFICATION -->
+<div id="toast" class="toast"></div>
+
 <script>
   (function() {
+    // ----- TOAST SYSTEM -----
+    function showToast(message, type = 'success') {
+      const toast = document.getElementById('toast');
+      toast.textContent = '';
+      toast.className = 'toast';
+      const icon = document.createElement('i');
+      if (type === 'success') {
+        icon.className = 'fas fa-check-circle';
+        toast.classList.add('success');
+      } else {
+        icon.className = 'fas fa-exclamation-circle';
+        toast.classList.add('error');
+      }
+      toast.appendChild(icon);
+      const span = document.createElement('span');
+      span.textContent = message;
+      toast.appendChild(span);
+      toast.classList.add('show');
+      clearTimeout(toast._timeout);
+      toast._timeout = setTimeout(() => {
+        toast.classList.remove('show');
+      }, 4000);
+    }
+
     // ----- STORAGE KEYS -----
     const STORAGE_KEY = 'dailyFinanceEntries';
     const TARGET_KEY = 'savingsTarget';
@@ -548,15 +601,18 @@
         localStorage.removeItem(TARGET_KEY);
         localStorage.removeItem(NAME_KEY);
         localStorage.removeItem(GOALS_KEY);
-        location.reload();
+        showToast('All data has been reset successfully.', 'success');
+        setTimeout(() => location.reload(), 800);
       }
     };
 
     // ----- STORAGE HELPERS -----
     function getEntries() {
-      try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || []; } catch { return []; }
+      try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || []; } catch (e) { console.error('Error reading entries:', e); return []; }
     }
-    function saveEntries(entries) { localStorage.setItem(STORAGE_KEY, JSON.stringify(entries)); }
+    function saveEntries(entries) {
+      try { localStorage.setItem(STORAGE_KEY, JSON.stringify(entries)); } catch (e) { console.error('Error saving entries:', e); }
+    }
     function getTarget() {
       try { const v = parseFloat(localStorage.getItem(TARGET_KEY)); return isNaN(v) ? 80 : v; } catch { return 80; }
     }
@@ -564,7 +620,7 @@
     function getUserName() { return localStorage.getItem(NAME_KEY) || ''; }
     function setUserName(n) { localStorage.setItem(NAME_KEY, n); }
     function getGoals() {
-      try { return JSON.parse(localStorage.getItem(GOALS_KEY)) || []; } catch { return []; }
+      try { return JSON.parse(localStorage.getItem(GOALS_KEY)) || []; } catch (e) { return []; }
     }
     function saveGoals(goals) { localStorage.setItem(GOALS_KEY, JSON.stringify(goals)); }
 
@@ -762,87 +818,93 @@
 
     // ----- RENDER ALL -----
     function renderAll() {
-      const entries = getEntries();
-      const target = getTarget();
-      const { totalIncome, totalExpenses, net } = computeTotals();
+      try {
+        const entries = getEntries();
+        const target = getTarget();
+        const { totalIncome, totalExpenses, net } = computeTotals();
 
-      document.getElementById('totalIncome').textContent = 'LKR ' + totalIncome.toLocaleString(undefined, { maximumFractionDigits: 2 });
-      document.getElementById('totalExpenses').textContent = 'LKR ' + totalExpenses.toLocaleString(undefined, { maximumFractionDigits: 2 });
-      document.getElementById('netSavings').textContent = 'LKR ' + net.toLocaleString(undefined, { maximumFractionDigits: 2 });
+        document.getElementById('totalIncome').textContent = 'LKR ' + totalIncome.toLocaleString(undefined, { maximumFractionDigits: 2 });
+        document.getElementById('totalExpenses').textContent = 'LKR ' + totalExpenses.toLocaleString(undefined, { maximumFractionDigits: 2 });
+        document.getElementById('netSavings').textContent = 'LKR ' + net.toLocaleString(undefined, { maximumFractionDigits: 2 });
 
-      const savingsRate = totalIncome > 0 ? (net / totalIncome) * 100 : 0;
-      const expenseRate = totalIncome > 0 ? (totalExpenses / totalIncome) * 100 : 0;
-      document.getElementById('savingsRate').textContent = savingsRate.toFixed(1) + '%';
-      document.getElementById('expenseRate').textContent = expenseRate.toFixed(1) + '%';
+        const savingsRate = totalIncome > 0 ? (net / totalIncome) * 100 : 0;
+        const expenseRate = totalIncome > 0 ? (totalExpenses / totalIncome) * 100 : 0;
+        document.getElementById('savingsRate').textContent = savingsRate.toFixed(1) + '%';
+        document.getElementById('expenseRate').textContent = expenseRate.toFixed(1) + '%';
 
-      document.getElementById('targetLabel').textContent = target + '%';
-      document.getElementById('displayTarget').textContent = target;
-      const gaugeFill = document.getElementById('gaugeFill');
-      const gaugePercent = document.getElementById('gaugePercent');
-      const gaugeStatus = document.getElementById('gaugeStatus');
-      let fillPercent = Math.min((savingsRate / target) * 100, 100);
-      if (totalIncome === 0) fillPercent = 0;
-      gaugeFill.style.width = fillPercent + '%';
-      gaugePercent.textContent = savingsRate.toFixed(1) + '%';
+        document.getElementById('targetLabel').textContent = target + '%';
+        document.getElementById('displayTarget').textContent = target;
+        const gaugeFill = document.getElementById('gaugeFill');
+        const gaugePercent = document.getElementById('gaugePercent');
+        const gaugeStatus = document.getElementById('gaugeStatus');
+        let fillPercent = Math.min((savingsRate / target) * 100, 100);
+        if (totalIncome === 0) fillPercent = 0;
+        gaugeFill.style.width = fillPercent + '%';
+        gaugePercent.textContent = savingsRate.toFixed(1) + '%';
 
-      if (totalIncome === 0) {
-        gaugeStatus.textContent = 'No income yet';
-        gaugeStatus.className = 'gauge-status';
-      } else if (savingsRate >= target) {
-        gaugeStatus.textContent = '🎯 On track!';
-        gaugeStatus.className = 'gauge-status on-track';
-      } else {
-        gaugeStatus.textContent = '⚠️ Below target';
-        gaugeStatus.className = 'gauge-status off-track';
-      }
+        if (totalIncome === 0) {
+          gaugeStatus.textContent = 'No income yet';
+          gaugeStatus.className = 'gauge-status';
+        } else if (savingsRate >= target) {
+          gaugeStatus.textContent = '🎯 On track!';
+          gaugeStatus.className = 'gauge-status on-track';
+        } else {
+          gaugeStatus.textContent = '⚠️ Below target';
+          gaugeStatus.className = 'gauge-status off-track';
+        }
 
-      updateCharts();
+        updateCharts();
 
-      const tbody = document.getElementById('txBody');
-      if (entries.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="6" class="empty-msg"><i class="far fa-hourglass"></i> No transactions yet. Add your first one!</td></tr>`;
-      } else {
-        let html = '';
-        const sorted = [...entries].reverse();
-        sorted.forEach((e, idx) => {
-          const realIdx = entries.length - 1 - idx;
-          const date = e.date || '—';
-          const type = e.type || 'income';
-          const category = e.category || '—';
-          const amount = parseFloat(e.amount) || 0;
-          const reason = e.reason || '—';
-          const typeLabel = type === 'income' ? 'Income' : 'Expense';
-          const amountClass = type === 'income' ? 'income' : 'expense';
-          const sign = type === 'income' ? '+' : '-';
-          html += `
-            <tr>
-              <td>${date}</td>
-              <td><span class="badge-type ${type}">${typeLabel}</span></td>
-              <td>${category}</td>
-              <td class="amount ${amountClass}">${sign} LKR ${amount.toLocaleString(undefined, { maximumFractionDigits: 2 })}</td>
-              <td>${reason}</td>
-              <td><button class="delete-btn" data-index="${realIdx}" title="Delete"><i class="fas fa-trash-alt"></i></button></td>
-            </tr>
-          `;
-        });
-        tbody.innerHTML = html;
-        document.querySelectorAll('.delete-btn').forEach(btn => {
-          btn.addEventListener('click', function() {
-            const idx = parseInt(this.getAttribute('data-index'), 10);
-            if (!isNaN(idx)) {
-              const entries = getEntries();
-              entries.splice(idx, 1);
-              saveEntries(entries);
-              renderAll();
-              generateWeeklyReport();
-            }
+        const tbody = document.getElementById('txBody');
+        if (entries.length === 0) {
+          tbody.innerHTML = `<tr><td colspan="6" class="empty-msg"><i class="far fa-hourglass"></i> No transactions yet. Add your first one!</td></tr>`;
+        } else {
+          let html = '';
+          const sorted = [...entries].reverse();
+          sorted.forEach((e, idx) => {
+            const realIdx = entries.length - 1 - idx;
+            const date = e.date || '—';
+            const type = e.type || 'income';
+            const category = e.category || '—';
+            const amount = parseFloat(e.amount) || 0;
+            const reason = e.reason || '—';
+            const typeLabel = type === 'income' ? 'Income' : 'Expense';
+            const amountClass = type === 'income' ? 'income' : 'expense';
+            const sign = type === 'income' ? '+' : '-';
+            html += `
+              <tr>
+                <td>${date}</td>
+                <td><span class="badge-type ${type}">${typeLabel}</span></td>
+                <td>${category}</td>
+                <td class="amount ${amountClass}">${sign} LKR ${amount.toLocaleString(undefined, { maximumFractionDigits: 2 })}</td>
+                <td>${reason}</td>
+                <td><button class="delete-btn" data-index="${realIdx}" title="Delete"><i class="fas fa-trash-alt"></i></button></td>
+              </tr>
+            `;
           });
-        });
-      }
+          tbody.innerHTML = html;
+          document.querySelectorAll('.delete-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+              const idx = parseInt(this.getAttribute('data-index'), 10);
+              if (!isNaN(idx)) {
+                const entries = getEntries();
+                entries.splice(idx, 1);
+                saveEntries(entries);
+                renderAll();
+                generateWeeklyReport();
+                showToast('Transaction deleted successfully.', 'success');
+              }
+            });
+          });
+        }
 
-      renderCategoryBreakdown(entries);
-      renderGoals();
-      updateGreeting();
+        renderCategoryBreakdown(entries);
+        renderGoals();
+        updateGreeting();
+      } catch (e) {
+        console.error('Render error:', e);
+        showToast('Error rendering dashboard. Please refresh.', 'error');
+      }
     }
 
     function renderCategoryBreakdown(entries) {
@@ -921,6 +983,7 @@
             goals.splice(idx, 1);
             saveGoals(goals);
             renderGoals();
+            showToast('Goal deleted.', 'success');
           }
         });
       });
@@ -930,14 +993,15 @@
       const type = document.getElementById('goalType').value;
       const title = document.getElementById('goalTitle').value.trim();
       const target = parseFloat(document.getElementById('goalTarget').value);
-      if (!title) { alert('Please enter a goal title.'); return; }
-      if (isNaN(target) || target <= 0) { alert('Please enter a valid positive target amount.'); return; }
+      if (!title) { showToast('Please enter a goal title.', 'error'); return; }
+      if (isNaN(target) || target <= 0) { showToast('Please enter a valid positive target amount.', 'error'); return; }
       const goals = getGoals();
       goals.push({ type, title, target });
       saveGoals(goals);
       document.getElementById('goalTitle').value = '';
       document.getElementById('goalTarget').value = '';
       renderGoals();
+      showToast('Goal added successfully!', 'success');
     }
 
     // ----- WEEKLY REPORT -----
@@ -988,7 +1052,7 @@
     // ----- EMAIL -----
     function sendReportViaEmail() {
       const entries = getEntries();
-      if (entries.length === 0) { alert('No transactions to report.'); return; }
+      if (entries.length === 0) { showToast('No transactions to report.', 'error'); return; }
       const name = getUserName() || 'Shehan Deemantha';
       const now = new Date().toLocaleDateString();
       let body = `Weekly Financial Report for ${name}\nGenerated: ${now}\n\n`;
@@ -1018,27 +1082,60 @@
       const subject = encodeURIComponent(`Weekly Finance Report - ${name}`);
       const bodyEncoded = encodeURIComponent(body);
       window.location.href = `mailto:?subject=${subject}&body=${bodyEncoded}`;
+      showToast('Email client opened.', 'success');
     }
 
-    // ----- ADD TRANSACTION -----
+    // ----- ADD TRANSACTION (with improved validation & feedback) -----
     function addTransaction() {
-      const date = document.getElementById('txDate').value.trim();
-      const type = document.getElementById('txType').value;
-      const category = document.getElementById('txCategory').value.trim();
-      const amount = parseFloat(document.getElementById('txAmount').value);
-      const reason = document.getElementById('txReason').value.trim();
-      if (!date) { alert('Please select a date.'); return; }
-      if (!category) { alert('Please enter a category.'); return; }
-      if (isNaN(amount) || amount <= 0) { alert('Please enter a valid positive amount.'); return; }
-      const entries = getEntries();
-      entries.push({ date, type, category, amount, reason: reason || '—' });
-      saveEntries(entries);
-      renderAll();
-      generateWeeklyReport();
-      document.getElementById('txCategory').value = '';
-      document.getElementById('txAmount').value = '';
-      document.getElementById('txReason').value = '';
-      document.getElementById('txCategory').focus();
+      try {
+        const date = document.getElementById('txDate').value.trim();
+        const type = document.getElementById('txType').value;
+        const category = document.getElementById('txCategory').value.trim();
+        const amount = parseFloat(document.getElementById('txAmount').value);
+        const reason = document.getElementById('txReason').value.trim();
+
+        // Auto-fill date if empty
+        let finalDate = date;
+        if (!finalDate) {
+          const today = new Date().toISOString().split('T')[0];
+          document.getElementById('txDate').value = today;
+          finalDate = today;
+        }
+
+        if (!category) {
+          showToast('Please enter a category.', 'error');
+          document.getElementById('txCategory').focus();
+          return;
+        }
+        if (isNaN(amount) || amount <= 0) {
+          showToast('Please enter a valid positive amount.', 'error');
+          document.getElementById('txAmount').focus();
+          return;
+        }
+
+        const entries = getEntries();
+        entries.push({
+          date: finalDate,
+          type: type,
+          category: category,
+          amount: amount,
+          reason: reason || '—'
+        });
+        saveEntries(entries);
+        renderAll();
+        generateWeeklyReport();
+
+        // Clear only category, amount, reason – keep date and type for batch adding
+        document.getElementById('txCategory').value = '';
+        document.getElementById('txAmount').value = '';
+        document.getElementById('txReason').value = '';
+        document.getElementById('txCategory').focus();
+
+        showToast('Transaction added successfully! ✅', 'success');
+      } catch (e) {
+        console.error('Add transaction error:', e);
+        showToast('Error adding transaction. Please try again.', 'error');
+      }
     }
 
     // ----- SET TARGET -----
@@ -1050,6 +1147,7 @@
       input.value = val;
       setTarget(val);
       renderAll();
+      showToast('Savings target updated to ' + val + '%', 'success');
     }
 
     // ----- NAME HANDLING -----
@@ -1082,20 +1180,23 @@
 
     // ----- INIT -----
     document.addEventListener('DOMContentLoaded', function() {
-      // Reset button listener
+      // Reset button
       document.getElementById('resetDataBtn').addEventListener('click', function(e) {
         e.preventDefault();
         window.resetAllData();
       });
 
+      // Set default date
       document.getElementById('txDate').value = new Date().toISOString().split('T')[0];
       document.getElementById('targetInput').value = getTarget();
 
+      // Initialize charts
       initCharts();
       loadName();
       renderAll();
       generateWeeklyReport();
 
+      // Name change events
       document.addEventListener('change', function(e) {
         if (e.target && e.target.id === 'userNameInput') {
           saveName();
@@ -1107,32 +1208,46 @@
         }
       });
 
+      // Update greeting every minute
       setInterval(updateGreeting, 60000);
 
+      // Add button
       document.getElementById('addBtn').addEventListener('click', addTransaction);
+
+      // Enter key on form fields
+      ['txCategory', 'txAmount', 'txReason'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) {
+          el.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+              e.preventDefault();
+              addTransaction();
+            }
+          });
+        }
+      });
+
+      // Target update
       document.getElementById('setTargetBtn').addEventListener('click', updateTarget);
+      document.getElementById('targetInput').addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          updateTarget();
+        }
+      });
+
+      // Report actions
       document.getElementById('generateReportBtn').addEventListener('click', generateWeeklyReport);
       document.getElementById('printReportBtn').addEventListener('click', function() { window.print(); });
       document.getElementById('emailReportBtn').addEventListener('click', sendReportViaEmail);
-      document.getElementById('addGoalBtn').addEventListener('click', addGoal);
 
+      // Goal add
+      document.getElementById('addGoalBtn').addEventListener('click', addGoal);
       document.getElementById('goalTitle').addEventListener('keypress', function(e) {
         if (e.key === 'Enter') { e.preventDefault(); document.getElementById('goalTarget').focus(); }
       });
       document.getElementById('goalTarget').addEventListener('keypress', function(e) {
         if (e.key === 'Enter') { e.preventDefault(); addGoal(); }
-      });
-
-      ['txCategory', 'txAmount', 'txReason'].forEach(id => {
-        const el = document.getElementById(id);
-        if (el) {
-          el.addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') { e.preventDefault(); addTransaction(); }
-          });
-        }
-      });
-      document.getElementById('targetInput').addEventListener('keypress', function(e) {
-        if (e.key === 'Enter') { e.preventDefault(); updateTarget(); }
       });
     });
   })();
