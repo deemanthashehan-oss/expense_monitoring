@@ -252,21 +252,77 @@
     .form-row .batch-hint { font-size: 12px; color: var(--gray-400); background: #ffffff; padding: 4px 14px; border-radius: var(--radius-full); border: 1px solid var(--gray-200); white-space: nowrap; }
 
     /* ---- TABLE ---- */
-    .table-wrap { overflow-x: auto; border-radius: var(--radius); border: 1px solid var(--gray-200); background: #ffffff; box-shadow: var(--shadow-sm); }
-    .transaction-table { width: 100%; border-collapse: separate; border-spacing: 0; font-size: 14px; }
-    .transaction-table th { text-align: left; padding: 14px 12px 14px 16px; background: var(--gray-50); color: var(--gray-600); font-weight: 600; font-size: 12px; text-transform: uppercase; letter-spacing: 0.4px; border-bottom: 1px solid var(--gray-200); }
-    .transaction-table td { padding: 12px 12px 12px 16px; border-bottom: 1px solid var(--gray-100); color: var(--gray-700); vertical-align: middle; }
+    .table-wrap {
+      overflow-x: auto;
+      border-radius: var(--radius);
+      border: 1px solid var(--gray-200);
+      background: #ffffff;
+      box-shadow: var(--shadow-sm);
+      margin-bottom: 4px;
+    }
+    .transaction-table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+      font-size: 14px;
+    }
+    .transaction-table th {
+      text-align: left;
+      padding: 14px 12px 14px 16px;
+      background: var(--gray-50);
+      color: var(--gray-600);
+      font-weight: 600;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+      border-bottom: 1px solid var(--gray-200);
+    }
+    .transaction-table td {
+      padding: 12px 12px 12px 16px;
+      border-bottom: 1px solid var(--gray-100);
+      color: var(--gray-700);
+      vertical-align: middle;
+    }
     .transaction-table tr:last-child td { border-bottom: none; }
     .transaction-table tr:hover td { background: var(--gray-50); }
-    .transaction-table .amount { font-weight: 600; text-align: right; padding-right: 16px; }
+    .transaction-table .amount {
+      font-weight: 600;
+      text-align: right;
+      padding-right: 16px;
+    }
     .transaction-table .amount.income { color: var(--success); }
     .transaction-table .amount.expense { color: var(--danger); }
-    .transaction-table .badge-type { display: inline-block; font-size: 11px; font-weight: 700; padding: 3px 14px; border-radius: var(--radius-full); text-transform: uppercase; letter-spacing: 0.3px; }
+    .transaction-table .badge-type {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 3px 14px;
+      border-radius: var(--radius-full);
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
     .badge-type.income { background: #ecfdf5; color: var(--success); }
     .badge-type.expense { background: #fef2f2; color: var(--danger); }
-    .transaction-table .delete-btn { background: transparent; border: none; color: var(--gray-400); cursor: pointer; font-size: 15px; padding: 4px 8px; border-radius: var(--radius-full); transition: 0.15s; }
-    .transaction-table .delete-btn:hover { background: #fef2f2; color: var(--danger); }
-    .empty-msg { text-align: center; color: var(--gray-400); padding: 32px 0; font-style: italic; }
+    .transaction-table .delete-btn {
+      background: transparent;
+      border: none;
+      color: var(--gray-400);
+      cursor: pointer;
+      font-size: 15px;
+      padding: 4px 8px;
+      border-radius: var(--radius-full);
+      transition: 0.15s;
+    }
+    .transaction-table .delete-btn:hover {
+      background: #fef2f2;
+      color: var(--danger);
+    }
+    .empty-msg {
+      text-align: center;
+      color: var(--gray-400);
+      padding: 32px 0;
+      font-style: italic;
+    }
 
     /* ---- CATEGORY BREAKDOWN ---- */
     .category-breakdown { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-top: 28px; }
@@ -339,7 +395,7 @@
     .detail-cat .cat-row:last-child { border-bottom: none; }
     .no-data-msg { color: var(--gray-400); font-style: italic; text-align: center; padding: 30px 0; }
 
-    /* ---- TOAST NOTIFICATION (NEW) ---- */
+    /* ---- TOAST NOTIFICATION ---- */
     .toast {
       position: fixed;
       bottom: 30px;
@@ -369,7 +425,7 @@
     .toast.error { background: var(--danger); }
     .toast i { font-size: 20px; }
 
-    /* ---- FOOTER WITH RESET BUTTON ---- */
+    /* ---- FOOTER ---- */
     .footer-note {
       margin-top: 28px;
       padding-top: 18px;
@@ -585,7 +641,7 @@
       clearTimeout(toast._timeout);
       toast._timeout = setTimeout(() => {
         toast.classList.remove('show');
-      }, 4000);
+      }, 3500);
     }
 
     // ----- STORAGE KEYS -----
@@ -608,10 +664,10 @@
 
     // ----- STORAGE HELPERS -----
     function getEntries() {
-      try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || []; } catch (e) { console.error('Error reading entries:', e); return []; }
+      try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || []; } catch (e) { return []; }
     }
     function saveEntries(entries) {
-      try { localStorage.setItem(STORAGE_KEY, JSON.stringify(entries)); } catch (e) { console.error('Error saving entries:', e); }
+      try { localStorage.setItem(STORAGE_KEY, JSON.stringify(entries)); } catch (e) { console.error('Save error:', e); }
     }
     function getTarget() {
       try { const v = parseFloat(localStorage.getItem(TARGET_KEY)); return isNaN(v) ? 80 : v; } catch { return 80; }
@@ -624,8 +680,7 @@
     }
     function saveGoals(goals) { localStorage.setItem(GOALS_KEY, JSON.stringify(goals)); }
 
-    function computeTotals() {
-      const entries = getEntries();
+    function computeTotals(entries) {
       let totalIncome = 0, totalExpenses = 0;
       entries.forEach(e => {
         const amt = parseFloat(e.amount) || 0;
@@ -650,16 +705,7 @@
       const ctx1 = document.getElementById('incomeExpenseChart').getContext('2d');
       chartIncomeExpense = new Chart(ctx1, {
         type: 'doughnut',
-        data: {
-          labels: ['Income', 'Expenses'],
-          datasets: [{
-            data: [0, 0],
-            backgroundColor: ['#10b981', '#ef4444'],
-            borderColor: ['#059669', '#dc2626'],
-            borderWidth: 2,
-            hoverOffset: 12,
-          }]
-        },
+        data: { labels: ['Income', 'Expenses'], datasets: [{ data: [0, 0], backgroundColor: ['#10b981', '#ef4444'], borderColor: ['#059669', '#dc2626'], borderWidth: 2, hoverOffset: 12 }] },
         options: {
           responsive: true,
           maintainAspectRatio: true,
@@ -671,42 +717,26 @@
             return label + ': LKR ' + value.toLocaleString(undefined, { maximumFractionDigits: 2 }) + ' (' + pct + '%)';
           } } } },
           cutout: '65%',
-          animation: { animateRotate: true, duration: 800 }
+          animation: { animateRotate: true, duration: 600 }
         }
       });
 
       const ctx2 = document.getElementById('expenseCategoryChart').getContext('2d');
       chartExpenseCategory = new Chart(ctx2, {
         type: 'doughnut',
-        data: {
-          labels: [],
-          datasets: [{
-            data: [],
-            backgroundColor: [],
-            borderColor: [],
-            borderWidth: 2,
-            hoverOffset: 12,
-          }]
-        },
+        data: { labels: [], datasets: [{ data: [], backgroundColor: [], borderColor: [], borderWidth: 2, hoverOffset: 12 }] },
         options: {
           responsive: true,
           maintainAspectRatio: true,
-          plugins: {
-            legend: { display: false },
-            tooltip: {
-              callbacks: {
-                label: function(context) {
-                  let label = context.label || '';
-                  let value = context.parsed || 0;
-                  let total = context.dataset.data.reduce((a, b) => a + b, 0);
-                  let pct = total > 0 ? ((value / total) * 100).toFixed(1) : 0;
-                  return label + ': LKR ' + value.toLocaleString(undefined, { maximumFractionDigits: 2 }) + ' (' + pct + '%)';
-                }
-              }
-            }
-          },
+          plugins: { legend: { display: false }, tooltip: { callbacks: { label: function(context) {
+            let label = context.label || '';
+            let value = context.parsed || 0;
+            let total = context.dataset.data.reduce((a, b) => a + b, 0);
+            let pct = total > 0 ? ((value / total) * 100).toFixed(1) : 0;
+            return label + ': LKR ' + value.toLocaleString(undefined, { maximumFractionDigits: 2 }) + ' (' + pct + '%)';
+          } } } },
           cutout: '65%',
-          animation: { animateRotate: true, duration: 800 }
+          animation: { animateRotate: true, duration: 600 }
         }
       });
 
@@ -714,14 +744,14 @@
     }
 
     function updateCharts() {
-      const { totalIncome, totalExpenses } = computeTotals();
+      const entries = getEntries();
+      const { totalIncome, totalExpenses } = computeTotals(entries);
 
       if (chartIncomeExpense) {
         chartIncomeExpense.data.datasets[0].data = [totalIncome, totalExpenses];
         chartIncomeExpense.update();
       }
 
-      const entries = getEntries();
       const expenseMap = {};
       entries.forEach(e => {
         if (e.type === 'expense') {
@@ -734,7 +764,6 @@
       const labels = Object.keys(expenseMap);
       const data = labels.map(k => expenseMap[k]);
       const colors = labels.map((_, i) => getColor(i));
-      const borderColors = labels.map((_, i) => getColor(i));
 
       if (chartExpenseCategory) {
         chartExpenseCategory.data.labels = labels;
@@ -807,106 +836,67 @@
       if (newInput) {
         newInput.addEventListener('change', saveName);
         newInput.addEventListener('blur', saveName);
-        if (!name) {
-          setTimeout(() => newInput.focus(), 100);
-        }
+        if (!name) { setTimeout(() => newInput.focus(), 200); }
       }
 
       document.getElementById('greetingIcon').textContent = icon;
       document.getElementById('greetingTime').textContent = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
     }
 
-    // ----- RENDER ALL -----
-    function renderAll() {
-      try {
-        const entries = getEntries();
-        const target = getTarget();
-        const { totalIncome, totalExpenses, net } = computeTotals();
-
-        document.getElementById('totalIncome').textContent = 'LKR ' + totalIncome.toLocaleString(undefined, { maximumFractionDigits: 2 });
-        document.getElementById('totalExpenses').textContent = 'LKR ' + totalExpenses.toLocaleString(undefined, { maximumFractionDigits: 2 });
-        document.getElementById('netSavings').textContent = 'LKR ' + net.toLocaleString(undefined, { maximumFractionDigits: 2 });
-
-        const savingsRate = totalIncome > 0 ? (net / totalIncome) * 100 : 0;
-        const expenseRate = totalIncome > 0 ? (totalExpenses / totalIncome) * 100 : 0;
-        document.getElementById('savingsRate').textContent = savingsRate.toFixed(1) + '%';
-        document.getElementById('expenseRate').textContent = expenseRate.toFixed(1) + '%';
-
-        document.getElementById('targetLabel').textContent = target + '%';
-        document.getElementById('displayTarget').textContent = target;
-        const gaugeFill = document.getElementById('gaugeFill');
-        const gaugePercent = document.getElementById('gaugePercent');
-        const gaugeStatus = document.getElementById('gaugeStatus');
-        let fillPercent = Math.min((savingsRate / target) * 100, 100);
-        if (totalIncome === 0) fillPercent = 0;
-        gaugeFill.style.width = fillPercent + '%';
-        gaugePercent.textContent = savingsRate.toFixed(1) + '%';
-
-        if (totalIncome === 0) {
-          gaugeStatus.textContent = 'No income yet';
-          gaugeStatus.className = 'gauge-status';
-        } else if (savingsRate >= target) {
-          gaugeStatus.textContent = '🎯 On track!';
-          gaugeStatus.className = 'gauge-status on-track';
-        } else {
-          gaugeStatus.textContent = '⚠️ Below target';
-          gaugeStatus.className = 'gauge-status off-track';
-        }
-
-        updateCharts();
-
-        const tbody = document.getElementById('txBody');
-        if (entries.length === 0) {
-          tbody.innerHTML = `<tr><td colspan="6" class="empty-msg"><i class="far fa-hourglass"></i> No transactions yet. Add your first one!</td></tr>`;
-        } else {
-          let html = '';
-          const sorted = [...entries].reverse();
-          sorted.forEach((e, idx) => {
-            const realIdx = entries.length - 1 - idx;
-            const date = e.date || '—';
-            const type = e.type || 'income';
-            const category = e.category || '—';
-            const amount = parseFloat(e.amount) || 0;
-            const reason = e.reason || '—';
-            const typeLabel = type === 'income' ? 'Income' : 'Expense';
-            const amountClass = type === 'income' ? 'income' : 'expense';
-            const sign = type === 'income' ? '+' : '-';
-            html += `
-              <tr>
-                <td>${date}</td>
-                <td><span class="badge-type ${type}">${typeLabel}</span></td>
-                <td>${category}</td>
-                <td class="amount ${amountClass}">${sign} LKR ${amount.toLocaleString(undefined, { maximumFractionDigits: 2 })}</td>
-                <td>${reason}</td>
-                <td><button class="delete-btn" data-index="${realIdx}" title="Delete"><i class="fas fa-trash-alt"></i></button></td>
-              </tr>
-            `;
-          });
-          tbody.innerHTML = html;
-          document.querySelectorAll('.delete-btn').forEach(btn => {
-            btn.addEventListener('click', function() {
-              const idx = parseInt(this.getAttribute('data-index'), 10);
-              if (!isNaN(idx)) {
-                const entries = getEntries();
-                entries.splice(idx, 1);
-                saveEntries(entries);
-                renderAll();
-                generateWeeklyReport();
-                showToast('Transaction deleted successfully.', 'success');
-              }
-            });
-          });
-        }
-
-        renderCategoryBreakdown(entries);
-        renderGoals();
-        updateGreeting();
-      } catch (e) {
-        console.error('Render error:', e);
-        showToast('Error rendering dashboard. Please refresh.', 'error');
+    // ----- RENDER TABLE (separate function for clarity) -----
+    function renderTransactionTable(entries) {
+      const tbody = document.getElementById('txBody');
+      if (!tbody) {
+        console.error('Table body not found!');
+        return;
       }
+
+      if (entries.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="6" class="empty-msg"><i class="far fa-hourglass"></i> No transactions yet. Add your first one!</td></tr>`;
+        return;
+      }
+
+      let html = '';
+      const sorted = [...entries].reverse();
+      sorted.forEach((e, idx) => {
+        const realIdx = entries.length - 1 - idx;
+        const date = e.date || '—';
+        const type = e.type || 'income';
+        const category = e.category || '—';
+        const amount = parseFloat(e.amount) || 0;
+        const reason = e.reason || '—';
+        const typeLabel = type === 'income' ? 'Income' : 'Expense';
+        const amountClass = type === 'income' ? 'income' : 'expense';
+        const sign = type === 'income' ? '+' : '-';
+        html += `
+          <tr>
+            <td>${date}</td>
+            <td><span class="badge-type ${type}">${typeLabel}</span></td>
+            <td>${category}</td>
+            <td class="amount ${amountClass}">${sign} LKR ${amount.toLocaleString(undefined, { maximumFractionDigits: 2 })}</td>
+            <td>${reason}</td>
+            <td><button class="delete-btn" data-index="${realIdx}" title="Delete"><i class="fas fa-trash-alt"></i></button></td>
+          </tr>
+        `;
+      });
+      tbody.innerHTML = html;
+
+      // Attach delete events
+      document.querySelectorAll('.delete-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+          const idx = parseInt(this.getAttribute('data-index'), 10);
+          if (!isNaN(idx)) {
+            const entries = getEntries();
+            entries.splice(idx, 1);
+            saveEntries(entries);
+            refreshEverything();
+            showToast('Transaction deleted.', 'success');
+          }
+        });
+      });
     }
 
+    // ----- CATEGORY BREAKDOWN -----
     function renderCategoryBreakdown(entries) {
       const incomeMap = {}, expenseMap = {};
       entries.forEach(e => {
@@ -938,7 +928,8 @@
     // ----- GOALS -----
     function renderGoals() {
       const goals = getGoals();
-      const { totalIncome, totalExpenses, net } = computeTotals();
+      const entries = getEntries();
+      const { totalIncome, totalExpenses, net } = computeTotals(entries);
       const container = document.getElementById('goalsList');
       if (goals.length === 0) {
         container.innerHTML = `<div class="no-goals-msg"><i class="far fa-flag"></i> No goals set. Create one above!</div>`;
@@ -1085,7 +1076,61 @@
       showToast('Email client opened.', 'success');
     }
 
-    // ----- ADD TRANSACTION (with improved validation & feedback) -----
+    // ----- REFRESH EVERYTHING (core function) -----
+    function refreshEverything() {
+      const entries = getEntries();
+      const target = getTarget();
+      const { totalIncome, totalExpenses, net } = computeTotals(entries);
+
+      // Update KPI cards
+      document.getElementById('totalIncome').textContent = 'LKR ' + totalIncome.toLocaleString(undefined, { maximumFractionDigits: 2 });
+      document.getElementById('totalExpenses').textContent = 'LKR ' + totalExpenses.toLocaleString(undefined, { maximumFractionDigits: 2 });
+      document.getElementById('netSavings').textContent = 'LKR ' + net.toLocaleString(undefined, { maximumFractionDigits: 2 });
+
+      const savingsRate = totalIncome > 0 ? (net / totalIncome) * 100 : 0;
+      const expenseRate = totalIncome > 0 ? (totalExpenses / totalIncome) * 100 : 0;
+      document.getElementById('savingsRate').textContent = savingsRate.toFixed(1) + '%';
+      document.getElementById('expenseRate').textContent = expenseRate.toFixed(1) + '%';
+
+      // Gauge
+      document.getElementById('targetLabel').textContent = target + '%';
+      document.getElementById('displayTarget').textContent = target;
+      const gaugeFill = document.getElementById('gaugeFill');
+      const gaugePercent = document.getElementById('gaugePercent');
+      const gaugeStatus = document.getElementById('gaugeStatus');
+      let fillPercent = Math.min((savingsRate / target) * 100, 100);
+      if (totalIncome === 0) fillPercent = 0;
+      gaugeFill.style.width = fillPercent + '%';
+      gaugePercent.textContent = savingsRate.toFixed(1) + '%';
+
+      if (totalIncome === 0) {
+        gaugeStatus.textContent = 'No income yet';
+        gaugeStatus.className = 'gauge-status';
+      } else if (savingsRate >= target) {
+        gaugeStatus.textContent = '🎯 On track!';
+        gaugeStatus.className = 'gauge-status on-track';
+      } else {
+        gaugeStatus.textContent = '⚠️ Below target';
+        gaugeStatus.className = 'gauge-status off-track';
+      }
+
+      // Update charts
+      updateCharts();
+
+      // Update transaction table
+      renderTransactionTable(entries);
+
+      // Update category breakdown
+      renderCategoryBreakdown(entries);
+
+      // Update goals
+      renderGoals();
+
+      // Update greeting
+      updateGreeting();
+    }
+
+    // ----- ADD TRANSACTION -----
     function addTransaction() {
       try {
         const date = document.getElementById('txDate').value.trim();
@@ -1094,7 +1139,6 @@
         const amount = parseFloat(document.getElementById('txAmount').value);
         const reason = document.getElementById('txReason').value.trim();
 
-        // Auto-fill date if empty
         let finalDate = date;
         if (!finalDate) {
           const today = new Date().toISOString().split('T')[0];
@@ -1122,10 +1166,12 @@
           reason: reason || '—'
         });
         saveEntries(entries);
-        renderAll();
+
+        // Refresh everything
+        refreshEverything();
         generateWeeklyReport();
 
-        // Clear only category, amount, reason – keep date and type for batch adding
+        // Clear form fields (keep date & type for batch adding)
         document.getElementById('txCategory').value = '';
         document.getElementById('txAmount').value = '';
         document.getElementById('txReason').value = '';
@@ -1146,7 +1192,7 @@
       if (val > 100) val = 100;
       input.value = val;
       setTarget(val);
-      renderAll();
+      refreshEverything();
       showToast('Savings target updated to ' + val + '%', 'success');
     }
 
@@ -1155,11 +1201,8 @@
       const input = document.getElementById('userNameInput');
       if (!input) return;
       const val = input.value.trim();
-      if (val) {
-        setUserName(val);
-      } else {
-        localStorage.removeItem(NAME_KEY);
-      }
+      if (val) { setUserName(val); }
+      else { localStorage.removeItem(NAME_KEY); }
       updateGreeting();
     }
 
@@ -1167,9 +1210,8 @@
       const saved = getUserName();
       const input = document.getElementById('userNameInput');
       if (input) {
-        if (saved) {
-          input.value = saved;
-        } else {
+        if (saved) { input.value = saved; }
+        else {
           input.value = '';
           input.placeholder = 'your name';
           setTimeout(() => input.focus(), 200);
@@ -1190,25 +1232,20 @@
       document.getElementById('txDate').value = new Date().toISOString().split('T')[0];
       document.getElementById('targetInput').value = getTarget();
 
-      // Initialize charts
+      // Init charts
       initCharts();
       loadName();
-      renderAll();
+      refreshEverything();
       generateWeeklyReport();
 
-      // Name change events
+      // Name events
       document.addEventListener('change', function(e) {
-        if (e.target && e.target.id === 'userNameInput') {
-          saveName();
-        }
+        if (e.target && e.target.id === 'userNameInput') { saveName(); }
       });
       document.addEventListener('blur', function(e) {
-        if (e.target && e.target.id === 'userNameInput') {
-          saveName();
-        }
+        if (e.target && e.target.id === 'userNameInput') { saveName(); }
       });
 
-      // Update greeting every minute
       setInterval(updateGreeting, 60000);
 
       // Add button
