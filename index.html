@@ -71,6 +71,105 @@
       border: 1px solid rgba(255,255,255,0.4);
     }
 
+    /* ===== NAME OVERLAY ===== */
+    #nameOverlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(15, 23, 42, 0.7);
+      backdrop-filter: blur(12px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      padding: 20px;
+      animation: fadeIn 0.4s ease;
+    }
+    #nameOverlay.hidden {
+      display: none;
+    }
+    .name-modal {
+      background: #ffffff;
+      border-radius: 32px;
+      padding: 40px 48px;
+      max-width: 440px;
+      width: 100%;
+      box-shadow: 0 40px 80px rgba(0,0,0,0.3);
+      text-align: center;
+      animation: slideUp 0.4s ease;
+    }
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(30px) scale(0.95); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+    .name-modal .modal-icon {
+      font-size: 48px;
+      margin-bottom: 12px;
+      display: block;
+    }
+    .name-modal h2 {
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--gray-900);
+      margin-bottom: 6px;
+    }
+    .name-modal p {
+      color: var(--gray-500);
+      font-size: 15px;
+      margin-bottom: 24px;
+      line-height: 1.5;
+    }
+    .name-modal .field {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      text-align: left;
+    }
+    .name-modal .field label {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--gray-600);
+    }
+    .name-modal .field input {
+      padding: 12px 16px;
+      border: 2px solid var(--gray-200);
+      border-radius: 14px;
+      font-size: 16px;
+      width: 100%;
+      transition: 0.15s;
+      color: var(--gray-900);
+    }
+    .name-modal .field input:focus {
+      border-color: var(--secondary);
+      outline: none;
+      box-shadow: 0 0 0 4px rgba(59,130,246,0.12);
+    }
+    .name-modal .btn-primary {
+      width: 100%;
+      padding: 14px;
+      background: linear-gradient(135deg, var(--secondary), var(--accent));
+      color: white;
+      border: none;
+      border-radius: 30px;
+      font-weight: 600;
+      font-size: 16px;
+      cursor: pointer;
+      transition: all 0.2s;
+      margin-top: 16px;
+      box-shadow: 0 4px 14px rgba(59,130,246,0.3);
+    }
+    .name-modal .btn-primary:hover {
+      transform: scale(1.02);
+      box-shadow: 0 8px 25px rgba(59,130,246,0.4);
+    }
+    .name-modal .btn-primary:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+    }
+
     /* TOP BAR */
     .top-bar {
       display: flex;
@@ -142,27 +241,9 @@
       gap: 6px;
       flex-wrap: wrap;
     }
-    .greeting-box .greeting-text .name-input {
-      font: inherit;
+    .greeting-box .greeting-text .user-name-display {
       font-weight: 700;
-      font-size: 16px;
       color: var(--secondary);
-      background: transparent;
-      border: none;
-      border-bottom: 2px dashed var(--gray-300);
-      padding: 0 4px;
-      min-width: 100px;
-      outline: none;
-      transition: border-color 0.2s;
-      max-width: 180px;
-    }
-    .greeting-box .greeting-text .name-input:focus {
-      border-color: var(--secondary);
-    }
-    .greeting-box .greeting-text .name-input::placeholder {
-      color: var(--gray-400);
-      font-weight: 500;
-      font-size: 15px;
     }
     .greeting-box .greeting-time {
       font-size: 13px;
@@ -182,6 +263,12 @@
       font-weight: 500;
       border: 1px solid var(--gray-300);
       white-space: nowrap;
+      cursor: pointer;
+      transition: 0.15s;
+    }
+    .greeting-box .edit-hint:hover {
+      background: var(--gray-300);
+      color: var(--gray-600);
     }
 
     /* TABS */
@@ -316,7 +403,7 @@
       color: var(--info);
     }
 
-    /* CHARTS - Only Expense Breakdown now */
+    /* CHART - Expense Breakdown only */
     .chart-row {
       display: flex;
       justify-content: center;
@@ -357,55 +444,6 @@
       width: 100% !important;
       height: auto !important;
     }
-    .chart-stats {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      margin-top: 16px;
-    }
-    .stat-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 10px 16px;
-      background: #ffffff;
-      border-radius: var(--radius);
-      border: 1px solid var(--gray-200);
-      box-shadow: var(--shadow-sm);
-      transition: 0.15s;
-      font-size: 14px;
-    }
-    .stat-row:hover {
-      border-color: var(--gray-300);
-    }
-    .stat-row .label {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      font-weight: 500;
-      color: var(--gray-600);
-    }
-    .stat-row .label .dot {
-      width: 12px;
-      height: 12px;
-      border-radius: 50%;
-      display: inline-block;
-      flex-shrink: 0;
-    }
-    .stat-row .amount {
-      font-weight: 700;
-    }
-    .stat-row .amount.expense {
-      color: var(--danger);
-    }
-    .stat-row .amount.accent {
-      color: var(--accent);
-    }
-    .stat-row.net-row {
-      background: #f5f3ff;
-      border-color: #ddd6fe;
-    }
-
     .expense-legend {
       display: flex;
       flex-wrap: wrap;
@@ -786,8 +824,8 @@
       color: var(--gray-800);
     }
 
-    /* GOALS */
-    .goals-section {
+    /* ===== LOANS & DEBTS (replaces Goals) ===== */
+    .loans-section {
       margin-top: 32px;
       background: var(--gray-50);
       border-radius: var(--radius-lg);
@@ -795,14 +833,14 @@
       border: 1px solid var(--gray-200);
       box-shadow: var(--shadow-sm);
     }
-    .goals-header {
+    .loans-header {
       display: flex;
       flex-wrap: wrap;
       align-items: center;
       justify-content: space-between;
       margin-bottom: 20px;
     }
-    .goals-header h3 {
+    .loans-header h3 {
       font-size: 18px;
       font-weight: 700;
       color: var(--gray-800);
@@ -810,14 +848,31 @@
       align-items: center;
       gap: 12px;
     }
-    .goals-header h3 i {
-      color: var(--accent);
-      background: #f5f3ff;
+    .loans-header h3 i {
+      color: var(--warning);
+      background: #fffbeb;
       padding: 8px;
       border-radius: 12px;
       font-size: 18px;
     }
-    .add-goal-form {
+    .loans-header .loan-summary {
+      display: flex;
+      gap: 20px;
+      font-size: 14px;
+      background: #ffffff;
+      padding: 8px 20px;
+      border-radius: var(--radius-full);
+      border: 1px solid var(--gray-200);
+      box-shadow: var(--shadow-sm);
+    }
+    .loans-header .loan-summary span {
+      font-weight: 600;
+    }
+    .loans-header .loan-summary .given { color: var(--success); }
+    .loans-header .loan-summary .taken { color: var(--danger); }
+    .loans-header .loan-summary .net { color: var(--accent); }
+
+    .add-loan-form {
       display: flex;
       flex-wrap: wrap;
       gap: 12px 18px;
@@ -829,21 +884,21 @@
       margin-bottom: 20px;
       box-shadow: var(--shadow-sm);
     }
-    .add-goal-form .field {
+    .add-loan-form .field {
       display: flex;
       flex-direction: column;
       gap: 4px;
-      flex: 1 0 140px;
+      flex: 1 0 130px;
     }
-    .add-goal-form .field label {
+    .add-loan-form .field label {
       font-size: 11px;
       font-weight: 600;
       color: var(--gray-500);
       text-transform: uppercase;
       letter-spacing: 0.5px;
     }
-    .add-goal-form .field input,
-    .add-goal-form .field select {
+    .add-loan-form .field input,
+    .add-loan-form .field select {
       padding: 8px 12px;
       border-radius: var(--radius);
       border: 1px solid var(--gray-200);
@@ -852,15 +907,15 @@
       background: var(--gray-50);
       transition: 0.15s;
     }
-    .add-goal-form .field input:focus,
-    .add-goal-form .field select:focus {
+    .add-loan-form .field input:focus,
+    .add-loan-form .field select:focus {
       border-color: var(--secondary);
       outline: none;
       box-shadow: 0 0 0 3px rgba(59,130,246,0.12);
       background: #ffffff;
     }
-    .add-goal-form .btn-add-goal {
-      background: linear-gradient(135deg, var(--accent), #7c3aed);
+    .add-loan-form .btn-add-loan {
+      background: linear-gradient(135deg, var(--warning), #d97706);
       color: white;
       border: none;
       padding: 8px 24px;
@@ -873,121 +928,98 @@
       align-items: center;
       gap: 8px;
       height: 42px;
-      box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
+      box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
     }
-    .add-goal-form .btn-add-goal:hover {
+    .add-loan-form .btn-add-loan:hover {
       transform: scale(1.02) translateY(-2px);
-      box-shadow: 0 8px 20px rgba(139, 92, 246, 0.4);
+      box-shadow: 0 8px 20px rgba(245, 158, 11, 0.4);
     }
-    .goals-list {
+
+    .loans-list {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
-      gap: 16px;
+      grid-template-columns: 1fr;
+      gap: 12px;
     }
-    .goal-card {
+    .loan-card {
       background: #ffffff;
       border-radius: var(--radius);
-      padding: 18px 20px;
+      padding: 14px 20px;
       border: 1px solid var(--gray-200);
       box-shadow: var(--shadow-sm);
       transition: all 0.2s;
-      position: relative;
-      border-left: 6px solid var(--accent-color, var(--gray-400));
-    }
-    .goal-card:hover {
-      transform: translateY(-4px);
-      box-shadow: var(--shadow-lg);
-      border-color: var(--gray-300);
-    }
-    .goal-card .goal-title {
-      font-weight: 600;
-      font-size: 16px;
-      color: var(--gray-800);
       display: flex;
-      justify-content: space-between;
+      flex-wrap: wrap;
       align-items: center;
-      gap: 8px;
+      justify-content: space-between;
+      gap: 12px;
+      position: relative;
     }
-    .goal-card .goal-title .goal-type-badge {
-      font-size: 11px;
+    .loan-card:hover {
+      border-color: var(--gray-300);
+      box-shadow: var(--shadow-md);
+    }
+    .loan-card .loan-info {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 12px 20px;
+      flex: 1;
+    }
+    .loan-card .loan-info .loan-type {
+      font-size: 12px;
       font-weight: 700;
       padding: 3px 14px;
       border-radius: var(--radius-full);
       text-transform: uppercase;
       letter-spacing: 0.3px;
-      background: var(--gray-100);
+    }
+    .loan-type.given { background: #ecfdf5; color: var(--success); }
+    .loan-type.taken { background: #fef2f2; color: var(--danger); }
+    .loan-card .loan-info .loan-person {
+      font-weight: 600;
+      color: var(--gray-800);
+      font-size: 15px;
+    }
+    .loan-card .loan-info .loan-amount {
+      font-weight: 700;
+      font-size: 16px;
+    }
+    .loan-card .loan-info .loan-amount.given { color: var(--success); }
+    .loan-card .loan-info .loan-amount.taken { color: var(--danger); }
+    .loan-card .loan-info .loan-detail {
+      color: var(--gray-500);
+      font-size: 13px;
+    }
+    .loan-card .loan-info .loan-status {
+      font-size: 12px;
+      font-weight: 600;
+      padding: 2px 12px;
+      border-radius: var(--radius-full);
+      background: var(--gray-200);
       color: var(--gray-600);
     }
-    .goal-type-badge.savings {
-      background: #f5f3ff;
-      color: var(--accent);
-    }
-    .goal-type-badge.income {
-      background: #ecfdf5;
-      color: var(--success);
-    }
-    .goal-type-badge.expense {
-      background: #fef2f2;
-      color: var(--danger);
-    }
-    .goal-card .goal-progress {
-      margin: 12px 0 6px;
-    }
-    .goal-card .goal-progress .bar-bg {
-      height: 8px;
-      background: var(--gray-200);
-      border-radius: var(--radius-full);
-      overflow: hidden;
-    }
-    .goal-card .goal-progress .bar-fill {
-      height: 100%;
-      border-radius: var(--radius-full);
-      transition: width 0.5s ease;
-    }
-    .goal-card .goal-progress .bar-fill.savings {
-      background: var(--accent);
-    }
-    .goal-card .goal-progress .bar-fill.income {
-      background: var(--success);
-    }
-    .goal-card .goal-progress .bar-fill.expense {
-      background: var(--danger);
-    }
-    .goal-card .goal-stats {
-      display: flex;
-      justify-content: space-between;
-      font-size: 13px;
-      color: var(--gray-500);
-      margin-top: 6px;
-    }
-    .goal-card .goal-stats .current {
-      font-weight: 600;
-      color: var(--gray-700);
-    }
-    .goal-card .goal-stats .target {
-      font-weight: 500;
-    }
-    .goal-card .goal-delete {
-      position: absolute;
-      top: 12px;
-      right: 14px;
+    .loan-status.pending { background: #fef3c7; color: #d97706; }
+    .loan-status.partial { background: #dbeafe; color: var(--secondary); }
+    .loan-status.paid { background: #d1fae5; color: var(--success); }
+    .loan-status.overdue { background: #fecaca; color: var(--danger); }
+    .loan-card .loan-delete {
       background: transparent;
       border: none;
       color: var(--gray-400);
       cursor: pointer;
-      font-size: 14px;
+      font-size: 15px;
       padding: 4px 8px;
       border-radius: var(--radius-full);
       transition: 0.15s;
     }
-    .goal-card .goal-delete:hover {
+    .loan-card .loan-delete:hover {
       background: #fef2f2;
       color: var(--danger);
     }
-    .no-goals-msg {
+    .no-loans-msg {
       color: var(--gray-400);
       font-style: italic;
-      padding: 30px 0;
+      padding: 20px 0;
       text-align: center;
       grid-column: 1 / -1;
     }
@@ -1238,11 +1270,6 @@
       .greeting-box .greeting-text {
         font-size: 15px;
       }
-      .greeting-box .greeting-text .name-input {
-        font-size: 15px;
-        min-width: 80px;
-        max-width: 140px;
-      }
       .kpi-grid {
         grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
       }
@@ -1262,8 +1289,26 @@
       .form-row .batch-hint {
         display: none;
       }
-      .goals-list {
+      .loans-list {
         grid-template-columns: 1fr;
+      }
+      .loan-card {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      .loan-card .loan-info {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 6px;
+      }
+      .loans-header {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 12px;
+      }
+      .loans-header .loan-summary {
+        flex-wrap: wrap;
+        justify-content: center;
       }
       .report-actions {
         width: 100%;
@@ -1273,9 +1318,12 @@
         flex: 1;
         justify-content: center;
       }
-      .add-goal-form .btn-add-goal {
+      .add-loan-form .btn-add-loan {
         width: 100%;
         justify-content: center;
+      }
+      .add-loan-form .field {
+        flex: 1 0 100%;
       }
       .footer-note {
         flex-direction: column;
@@ -1307,10 +1355,27 @@
       .chart-wrapper {
         max-width: 220px;
       }
+      .name-modal {
+        padding: 30px 24px;
+      }
     }
   </style>
 </head>
 <body>
+
+  <!-- ===== NAME OVERLAY ===== -->
+  <div id="nameOverlay">
+    <div class="name-modal">
+      <span class="modal-icon">👋</span>
+      <h2>Welcome to Finance Pro</h2>
+      <p>Enter your name to start tracking your finances. Your data will be private and stored only in your browser.</p>
+      <div class="field">
+        <label for="userNameInputModal">Your Name</label>
+        <input type="text" id="userNameInputModal" placeholder="e.g. Shehan Deemantha" autofocus />
+      </div>
+      <button class="btn-primary" id="nameSubmitBtn">Continue <i class="fas fa-arrow-right"></i></button>
+    </div>
+  </div>
 
   <div class="container">
 
@@ -1324,10 +1389,10 @@
         <span class="greeting-icon" id="greetingIcon">🌅</span>
         <span class="greeting-text" id="greetingText">
           <span>Good Morning,</span>
-          <input type="text" id="userNameInput" class="name-input" placeholder="your name" value="Shehan Deemantha" />
+          <span class="user-name-display" id="userNameDisplay">Shehan</span>
         </span>
         <span class="greeting-time"><i class="far fa-clock"></i> <span id="greetingTime"></span></span>
-        <span class="edit-hint"><i class="fas fa-pen"></i> edit</span>
+        <span class="edit-hint" id="changeNameBtn"><i class="fas fa-pen"></i> change</span>
       </div>
     </div>
 
@@ -1359,6 +1424,7 @@
 
     <!-- ===== TAB 2: SUMMARY ===== -->
     <div class="tab-content" id="tab-summary">
+      <!-- KPI Cards -->
       <div class="kpi-grid">
         <div class="kpi-card income"><div class="label"><i class="fas fa-arrow-up"></i> Total Income</div><div class="value" id="totalIncome">LKR 0</div><div class="sub">All time</div></div>
         <div class="kpi-card expenses"><div class="label"><i class="fas fa-arrow-down"></i> Total Expenses</div><div class="value" id="totalExpenses">LKR 0</div><div class="sub">All time</div></div>
@@ -1367,7 +1433,7 @@
         <div class="kpi-card expense-rate"><div class="label"><i class="fas fa-percent"></i> Expense Rate</div><div class="value" id="expenseRate">0%</div><div class="sub">of total income</div></div>
       </div>
 
-      <!-- Expense Breakdown Chart (only this one) -->
+      <!-- Expense Breakdown Chart -->
       <div class="chart-row">
         <div class="chart-card">
           <div class="chart-title"><i class="fas fa-chart-pie"></i> Expense Breakdown – Where Your Money Goes</div>
@@ -1376,6 +1442,7 @@
         </div>
       </div>
 
+      <!-- Savings Target Gauge -->
       <div class="gauge-section">
         <div class="gauge-info">
           <div class="gauge-label"><i class="fas fa-flag-checkered"></i> Savings Target <span id="targetLabel">80%</span></div>
@@ -1392,22 +1459,63 @@
         <span class="gauge-status" id="gaugeStatus">—</span>
       </div>
 
+      <!-- Category Breakdown -->
       <div class="category-breakdown">
         <div class="cat-section"><h4><i class="fas fa-arrow-up" style="color:var(--success);"></i> Income by Category</h4><div id="incomeCategoryList"></div></div>
         <div class="cat-section"><h4><i class="fas fa-arrow-down" style="color:var(--danger);"></i> Expenses by Category</h4><div id="expenseCategoryList"></div></div>
       </div>
 
-      <div class="goals-section" id="goalsSection">
-        <div class="goals-header"><h3><i class="fas fa-bullseye"></i> Financial Goals</h3></div>
-        <div class="add-goal-form" id="addGoalForm">
-          <div class="field"><label for="goalType"><i class="fas fa-tag"></i> Type</label><select id="goalType"><option value="savings">Savings</option><option value="income">Income</option><option value="expense">Expense</option></select></div>
-          <div class="field"><label for="goalTitle"><i class="fas fa-heading"></i> Title</label><input type="text" id="goalTitle" placeholder="e.g. Emergency Fund" /></div>
-          <div class="field"><label for="goalTarget"><i class="fas fa-coins"></i> Target (LKR)</label><input type="number" id="goalTarget" placeholder="0" step="0.01" min="0" /></div>
-          <button class="btn-add-goal" id="addGoalBtn"><i class="fas fa-plus-circle"></i> Add Goal</button>
+      <!-- ===== LOANS & DEBTS (replaces Goals) ===== -->
+      <div class="loans-section" id="loansSection">
+        <div class="loans-header">
+          <h3><i class="fas fa-hand-holding-usd"></i> Loans & Debts</h3>
+          <div class="loan-summary">
+            <span>Given: <span class="given" id="loanGivenTotal">LKR 0</span></span>
+            <span>Taken: <span class="taken" id="loanTakenTotal">LKR 0</span></span>
+            <span>Net: <span class="net" id="loanNetTotal">LKR 0</span></span>
+          </div>
         </div>
-        <div class="goals-list" id="goalsList"></div>
+
+        <div class="add-loan-form" id="addLoanForm">
+          <div class="field">
+            <label for="loanType"><i class="fas fa-tag"></i> Type</label>
+            <select id="loanType">
+              <option value="given">Loan Given</option>
+              <option value="taken">Loan Taken</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="loanPerson"><i class="fas fa-user"></i> Person / Entity</label>
+            <input type="text" id="loanPerson" placeholder="e.g. John, Bank" />
+          </div>
+          <div class="field">
+            <label for="loanAmount"><i class="fas fa-coins"></i> Amount (LKR)</label>
+            <input type="number" id="loanAmount" placeholder="0" step="0.01" min="0" />
+          </div>
+          <div class="field" style="flex:0 0 140px;">
+            <label for="loanDate"><i class="far fa-calendar-alt"></i> Date</label>
+            <input type="date" id="loanDate" />
+          </div>
+          <div class="field" style="flex:0 0 140px;">
+            <label for="loanStatus"><i class="fas fa-circle"></i> Status</label>
+            <select id="loanStatus">
+              <option value="pending">Pending</option>
+              <option value="partial">Partially Paid</option>
+              <option value="paid">Paid</option>
+              <option value="overdue">Overdue</option>
+            </select>
+          </div>
+          <div class="field" style="flex:2;">
+            <label for="loanNotes"><i class="fas fa-pen"></i> Notes</label>
+            <input type="text" id="loanNotes" placeholder="Optional remarks" />
+          </div>
+          <button class="btn-add-loan" id="addLoanBtn"><i class="fas fa-plus-circle"></i> Add Loan</button>
+        </div>
+
+        <div class="loans-list" id="loansList"></div>
       </div>
 
+      <!-- Weekly Report -->
       <div class="weekly-report" id="weeklyReportSection">
         <div class="report-header">
           <h3><i class="fas fa-chart-line"></i> Weekly Financial Report</h3>
@@ -1432,7 +1540,92 @@
 
   <script>
     (function() {
-      // ---- TOAST ----
+      // ========================================================
+      // 1. NAMESPACED STORAGE (User-specific data)
+      // ========================================================
+      const STORAGE_PREFIX_KEY = 'financePro_user';
+      const STORAGE_ENTRIES_SUFFIX = '_entries';
+      const STORAGE_TARGET_SUFFIX = '_target';
+      const STORAGE_LOANS_SUFFIX = '_loans';
+      const STORAGE_NAME_KEY = 'financePro_userName';
+
+      let currentUser = localStorage.getItem(STORAGE_NAME_KEY) || '';
+
+      function getStorageKeys() {
+        const user = currentUser || 'default';
+        return {
+          entries: user + STORAGE_ENTRIES_SUFFIX,
+          target: user + STORAGE_TARGET_SUFFIX,
+          loans: user + STORAGE_LOANS_SUFFIX,
+        };
+      }
+
+      function getEntries() {
+        try {
+          const key = getStorageKeys().entries;
+          const raw = localStorage.getItem(key);
+          if (!raw) return [];
+          const parsed = JSON.parse(raw);
+          return Array.isArray(parsed) ? parsed : [];
+        } catch (e) {
+          return [];
+        }
+      }
+
+      function saveEntries(entries) {
+        try {
+          localStorage.setItem(getStorageKeys().entries, JSON.stringify(entries));
+        } catch (e) { console.error('Save error:', e); }
+      }
+
+      function getTarget() {
+        try {
+          const key = getStorageKeys().target;
+          const v = parseFloat(localStorage.getItem(key));
+          return isNaN(v) ? 80 : v;
+        } catch { return 80; }
+      }
+
+      function setTarget(v) {
+        localStorage.setItem(getStorageKeys().target, String(v));
+      }
+
+      function getLoans() {
+        try {
+          const key = getStorageKeys().loans;
+          const raw = localStorage.getItem(key);
+          if (!raw) return [];
+          const parsed = JSON.parse(raw);
+          return Array.isArray(parsed) ? parsed : [];
+        } catch (e) {
+          return [];
+        }
+      }
+
+      function saveLoans(loans) {
+        try {
+          localStorage.setItem(getStorageKeys().loans, JSON.stringify(loans));
+        } catch (e) { console.error('Save error:', e); }
+      }
+
+      // ========================================================
+      // 2. NAME MANAGEMENT
+      // ========================================================
+      function setUserName(name) {
+        currentUser = name.trim();
+        localStorage.setItem(STORAGE_NAME_KEY, currentUser);
+        document.getElementById('userNameDisplay').textContent = currentUser;
+        // Re-render everything with new namespace
+        refreshEverything();
+      }
+
+      function getUserName() {
+        return currentUser;
+      }
+
+      // ========================================================
+      // 3. TOAST
+      // ========================================================
       function showToast(message, type = 'success') {
         const toast = document.getElementById('toast');
         toast.textContent = '';
@@ -1450,44 +1643,29 @@
         toast._timeout = setTimeout(() => { toast.classList.remove('show'); }, 3500);
       }
 
-      // ---- STORAGE ----
-      const STORAGE_KEY = 'dailyFinanceEntries';
-      const TARGET_KEY = 'savingsTarget';
-      const NAME_KEY = 'userName';
-      const GOALS_KEY = 'financeGoals';
-
-      function getEntries() {
-        try {
-          const raw = localStorage.getItem(STORAGE_KEY);
-          if (!raw) return [];
-          const parsed = JSON.parse(raw);
-          return Array.isArray(parsed) ? parsed : [];
-        } catch (e) {
-          console.error('Error reading entries:', e);
-          return [];
-        }
+      // ========================================================
+      // 4. GREETING
+      // ========================================================
+      function updateGreeting() {
+        const now = new Date();
+        const hours = now.getHours();
+        let greeting = '',
+          icon = '';
+        if (hours < 12) { greeting = 'Good Morning';
+          icon = '🌅'; } else if (hours < 17) { greeting = 'Good Afternoon';
+          icon = '☀️'; } else if (hours < 21) { greeting = 'Good Evening';
+          icon = '🌇'; } else { greeting = 'Good Night';
+          icon = '🌙'; }
+        const name = getUserName() || 'Guest';
+        document.getElementById('greetingText').innerHTML =
+          `<span>${greeting},</span> <span class="user-name-display" id="userNameDisplay">${name}</span>`;
+        document.getElementById('greetingIcon').textContent = icon;
+        document.getElementById('greetingTime').textContent = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
       }
 
-      function saveEntries(entries) {
-        try {
-          localStorage.setItem(STORAGE_KEY, JSON.stringify(entries));
-        } catch (e) {
-          console.error('Save error:', e);
-        }
-      }
-
-      function getTarget() { try { const v = parseFloat(localStorage.getItem(TARGET_KEY)); return isNaN(v) ? 80 : v; } catch { return 80; } }
-
-      function setTarget(v) { localStorage.setItem(TARGET_KEY, String(v)); }
-
-      function getUserName() { return localStorage.getItem(NAME_KEY) || ''; }
-
-      function setUserName(n) { localStorage.setItem(NAME_KEY, n); }
-
-      function getGoals() { try { return JSON.parse(localStorage.getItem(GOALS_KEY)) || []; } catch (e) { return []; } }
-
-      function saveGoals(goals) { localStorage.setItem(GOALS_KEY, JSON.stringify(goals)); }
-
+      // ========================================================
+      // 5. COMPUTE TOTALS
+      // ========================================================
       function computeTotals(entries) {
         let totalIncome = 0,
           totalExpenses = 0;
@@ -1499,7 +1677,9 @@
         return { totalIncome, totalExpenses, net: totalIncome - totalExpenses };
       }
 
-      // ---- CHART ----
+      // ========================================================
+      // 6. CHART
+      // ========================================================
       let chartExpenseCategory = null;
       const categoryColors = ['#3b82f6', '#8b5cf6', '#ec4899', '#f59e0b', '#10b981', '#06b6d4', '#f97316', '#14b8a6', '#6366f1',
         '#d946ef', '#84cc16', '#e11d48', '#0ea5e9', '#8b5cf6', '#22c55e'
@@ -1539,7 +1719,6 @@
       }
 
       function updateChart() {
-        console.log('🔄 Updating expense chart...');
         const entries = getEntries();
         const expenseMap = {};
         entries.forEach(e => {
@@ -1559,12 +1738,8 @@
           chartExpenseCategory.data.datasets[0].backgroundColor = colors;
           chartExpenseCategory.data.datasets[0].borderColor = colors;
           chartExpenseCategory.update();
-          console.log('✅ Expense chart updated.');
-        } else {
-          console.warn('⚠️ chartExpenseCategory is null');
         }
 
-        // Update legend
         const container = document.getElementById('expenseLegendContainer');
         const totalExp = data.reduce((a, b) => a + b, 0);
         if (labels.length === 0 || totalExp === 0) {
@@ -1590,57 +1765,17 @@
         }
       }
 
-      // ---- GREETING ----
-      function updateGreeting() {
-        const now = new Date();
-        const hours = now.getHours();
-        let greeting = '',
-          icon = '';
-        if (hours < 12) { greeting = 'Good Morning';
-          icon = '🌅'; } else if (hours < 17) { greeting = 'Good Afternoon';
-          icon = '☀️'; } else if (hours < 21) { greeting = 'Good Evening';
-          icon = '🌇'; } else { greeting = 'Good Night';
-          icon = '🌙'; }
-        const input = document.getElementById('userNameInput');
-        let name = input.value.trim();
-        if (!name) { const stored = getUserName(); if (stored) name = stored;
-          else name = ''; }
-        const greetingSpan = document.getElementById('greetingText');
-        if (name) {
-          greetingSpan.innerHTML =
-            `<span>${greeting},</span> <input type="text" id="userNameInput" class="name-input" placeholder="your name" value="${name}" />`;
-        } else {
-          greetingSpan.innerHTML =
-            `<span>${greeting},</span> <input type="text" id="userNameInput" class="name-input" placeholder="your name" value="" />`;
-        }
-        const newInput = document.getElementById('userNameInput');
-        if (newInput) {
-          newInput.addEventListener('change', saveName);
-          newInput.addEventListener('blur', saveName);
-          if (!name) { setTimeout(() => newInput.focus(), 200); }
-        }
-        document.getElementById('greetingIcon').textContent = icon;
-        document.getElementById('greetingTime').textContent = now.toLocaleTimeString([], { hour: '2-digit',
-          minute: '2-digit' });
-      }
-
-      // ---- RENDER TABLE ----
+      // ========================================================
+      // 7. RENDER TABLE
+      // ========================================================
       function renderTransactionTable() {
         const tbody = document.getElementById('txBody');
-        if (!tbody) {
-          console.error('Table body not found!');
-          return;
-        }
-
         const entries = getEntries();
-        console.log('📊 Rendering table with', entries.length, 'entries');
-
         if (!entries || entries.length === 0) {
           tbody.innerHTML =
             `<tr><td colspan="6" class="empty-msg"><i class="far fa-hourglass"></i> No transactions yet. Add your first one!</td></tr>`;
           return;
         }
-
         let html = '';
         const sorted = [...entries].sort((a, b) => (a.date < b.date ? 1 : -1));
         sorted.forEach((e) => {
@@ -1680,13 +1815,14 @@
         });
       }
 
-      // ---- RENDER SUMMARY ----
+      // ========================================================
+      // 8. RENDER SUMMARY
+      // ========================================================
       function renderSummary() {
         const entries = getEntries();
         const target = getTarget();
         const { totalIncome, totalExpenses, net } = computeTotals(entries);
 
-        // KPIs
         document.getElementById('totalIncome').textContent = 'LKR ' + totalIncome.toLocaleString(undefined, { maximumFractionDigits: 2 });
         document.getElementById('totalExpenses').textContent = 'LKR ' + totalExpenses.toLocaleString(undefined, { maximumFractionDigits: 2 });
         document.getElementById('netSavings').textContent = 'LKR ' + net.toLocaleString(undefined, { maximumFractionDigits: 2 });
@@ -1696,7 +1832,6 @@
         document.getElementById('savingsRate').textContent = savingsRate.toFixed(1) + '%';
         document.getElementById('expenseRate').textContent = expenseRate.toFixed(1) + '%';
 
-        // Gauge
         document.getElementById('targetLabel').textContent = target + '%';
         document.getElementById('displayTarget').textContent = target;
         const gaugeFill = document.getElementById('gaugeFill');
@@ -1718,25 +1853,16 @@
           gaugeStatus.className = 'gauge-status off-track';
         }
 
-        // Update expense chart
         updateChart();
-
-        // Category breakdown
         renderCategoryBreakdown(entries);
-
-        // Goals
-        renderGoals();
-
-        // Weekly report
+        renderLoans();
         generateWeeklyReport();
-
-        // Greeting
         updateGreeting();
-
-        console.log('✅ Summary rendered – ' + entries.length + ' transactions.');
       }
 
-      // ---- CATEGORY BREAKDOWN ----
+      // ========================================================
+      // 9. CATEGORY BREAKDOWN
+      // ========================================================
       function renderCategoryBreakdown(entries) {
         const incomeMap = {},
           expenseMap = {};
@@ -1765,83 +1891,95 @@
         renderList(expenseMap, 'expenseCategoryList');
       }
 
-      // ---- GOALS ----
-      function renderGoals() {
-        const goals = getGoals();
-        const entries = getEntries();
-        const { totalIncome, totalExpenses, net } = computeTotals(entries);
-        const container = document.getElementById('goalsList');
-        if (goals.length === 0) {
-          container.innerHTML = `<div class="no-goals-msg"><i class="far fa-flag"></i> No goals set. Create one above!</div>`;
-          return;
-        }
-        let html = '';
-        goals.forEach((goal, index) => {
-          let current = 0,
-            colorClass = '',
-            typeLabel = '';
-          if (goal.type === 'savings') { current = net;
-            colorClass = 'savings';
-            typeLabel = 'Savings'; } else if (goal.type === 'income') { current = totalIncome;
-            colorClass = 'income';
-            typeLabel = 'Income'; } else if (goal.type === 'expense') { current = totalExpenses;
-            colorClass = 'expense';
-            typeLabel = 'Expense'; }
-          const target = parseFloat(goal.target) || 1;
-          let progress = Math.min((current / target) * 100, 100);
-          if (goal.type === 'expense') progress = Math.min((current / target) * 100, 100);
-          const progressDisplay = progress.toFixed(1);
-          const accentColor = colorClass === 'savings' ? 'var(--accent)' : colorClass === 'income' ? 'var(--success)' :
-            'var(--danger)';
-          html += `
-              <div class="goal-card" style="--accent-color: ${accentColor};">
-                <button class="goal-delete" data-index="${index}"><i class="fas fa-times"></i></button>
-                <div class="goal-title">
-                  <span>${goal.title || 'Unnamed Goal'}</span>
-                  <span class="goal-type-badge ${colorClass}">${typeLabel}</span>
+      // ========================================================
+      // 10. LOANS & DEBTS
+      // ========================================================
+      function renderLoans() {
+        const loans = getLoans();
+        const container = document.getElementById('loansList');
+        let totalGiven = 0,
+          totalTaken = 0;
+
+        if (loans.length === 0) {
+          container.innerHTML = `<div class="no-loans-msg"><i class="far fa-handshake"></i> No loans or debts recorded yet.</div>`;
+        } else {
+          let html = '';
+          loans.forEach((loan, index) => {
+            const amt = parseFloat(loan.amount) || 0;
+            if (loan.type === 'given') totalGiven += amt;
+            else totalTaken += amt;
+            const typeLabel = loan.type === 'given' ? 'Given' : 'Taken';
+            const typeClass = loan.type === 'given' ? 'given' : 'taken';
+            const statusClass = loan.status || 'pending';
+            const date = loan.date || '—';
+            const notes = loan.notes || '';
+            html += `
+                <div class="loan-card">
+                  <div class="loan-info">
+                    <span class="loan-type ${typeClass}">${typeLabel}</span>
+                    <span class="loan-person">${loan.person || 'Unnamed'}</span>
+                    <span class="loan-amount ${typeClass}">${loan.type === 'given' ? '+' : '-'} LKR ${amt.toLocaleString(undefined, { maximumFractionDigits: 2 })}</span>
+                    <span class="loan-detail"><i class="far fa-calendar-alt"></i> ${date}</span>
+                    <span class="loan-status ${statusClass}">${statusClass.charAt(0).toUpperCase() + statusClass.slice(1)}</span>
+                    ${notes ? `<span class="loan-detail"><i class="fas fa-pen"></i> ${notes}</span>` : ''}
+                  </div>
+                  <button class="loan-delete" data-index="${index}" title="Delete"><i class="fas fa-trash-alt"></i></button>
                 </div>
-                <div class="goal-progress">
-                  <div class="bar-bg"><div class="bar-fill ${colorClass}" style="width:${Math.min(progress,100)}%;"></div></div>
-                </div>
-                <div class="goal-stats">
-                  <span class="current">LKR ${current.toLocaleString(undefined, { maximumFractionDigits: 2 })}</span>
-                  <span class="target">Target: LKR ${target.toLocaleString(undefined, { maximumFractionDigits: 2 })}</span>
-                </div>
-                <div style="font-size:13px; color:var(--gray-400); margin-top:4px; text-align:right;">${progressDisplay}%</div>
-              </div>
-            `;
-        });
-        container.innerHTML = html;
-        document.querySelectorAll('.goal-delete').forEach(btn => {
-          btn.addEventListener('click', function() {
-            const idx = parseInt(this.getAttribute('data-index'), 10);
-            if (!isNaN(idx)) {
-              const goals = getGoals();
-              goals.splice(idx, 1);
-              saveGoals(goals);
-              renderGoals();
-              showToast('Goal deleted.', 'success');
-            }
+              `;
           });
-        });
+          container.innerHTML = html;
+
+          document.querySelectorAll('.loan-delete').forEach(btn => {
+            btn.addEventListener('click', function() {
+              const idx = parseInt(this.getAttribute('data-index'), 10);
+              if (!isNaN(idx)) {
+                const loans = getLoans();
+                loans.splice(idx, 1);
+                saveLoans(loans);
+                renderLoans();
+                showToast('Loan entry deleted.', 'success');
+              }
+            });
+          });
+        }
+
+        // Update summary
+        document.getElementById('loanGivenTotal').textContent = 'LKR ' + totalGiven.toLocaleString(undefined, { maximumFractionDigits: 2 });
+        document.getElementById('loanTakenTotal').textContent = 'LKR ' + totalTaken.toLocaleString(undefined, { maximumFractionDigits: 2 });
+        document.getElementById('loanNetTotal').textContent = 'LKR ' + (totalGiven - totalTaken).toLocaleString(undefined, { maximumFractionDigits: 2 });
       }
 
-      function addGoal() {
-        const type = document.getElementById('goalType').value;
-        const title = document.getElementById('goalTitle').value.trim();
-        const target = parseFloat(document.getElementById('goalTarget').value);
-        if (!title) { showToast('Please enter a goal title.', 'error'); return; }
-        if (isNaN(target) || target <= 0) { showToast('Please enter a valid positive target amount.', 'error'); return; }
-        const goals = getGoals();
-        goals.push({ type, title, target });
-        saveGoals(goals);
-        document.getElementById('goalTitle').value = '';
-        document.getElementById('goalTarget').value = '';
-        renderGoals();
-        showToast('Goal added successfully!', 'success');
+      function addLoan() {
+        const type = document.getElementById('loanType').value;
+        const person = document.getElementById('loanPerson').value.trim();
+        const amount = parseFloat(document.getElementById('loanAmount').value);
+        const date = document.getElementById('loanDate').value.trim();
+        const status = document.getElementById('loanStatus').value;
+        const notes = document.getElementById('loanNotes').value.trim();
+
+        if (!person) { showToast('Please enter a person/entity name.', 'error'); return; }
+        if (isNaN(amount) || amount <= 0) { showToast('Please enter a valid positive amount.', 'error'); return; }
+        let finalDate = date;
+        if (!finalDate) {
+          const today = new Date().toISOString().split('T')[0];
+          document.getElementById('loanDate').value = today;
+          finalDate = today;
+        }
+
+        const loans = getLoans();
+        loans.push({ type, person, amount, date: finalDate, status, notes: notes || '' });
+        saveLoans(loans);
+        document.getElementById('loanPerson').value = '';
+        document.getElementById('loanAmount').value = '';
+        document.getElementById('loanNotes').value = '';
+        document.getElementById('loanPerson').focus();
+        renderLoans();
+        showToast('Loan entry added!', 'success');
       }
 
-      // ---- WEEKLY REPORT ----
+      // ========================================================
+      // 11. WEEKLY REPORT
+      // ========================================================
       function generateWeeklyReport() {
         const entries = getEntries();
         const container = document.getElementById('reportContent');
@@ -1891,11 +2029,13 @@
         container.innerHTML = html;
       }
 
-      // ---- EMAIL ----
+      // ========================================================
+      // 12. EMAIL
+      // ========================================================
       function sendReportViaEmail() {
         const entries = getEntries();
         if (entries.length === 0) { showToast('No transactions to report.', 'error'); return; }
-        const name = getUserName() || 'Shehan Deemantha';
+        const name = getUserName() || 'User';
         const now = new Date().toLocaleDateString();
         let body = `Weekly Financial Report for ${name}\nGenerated: ${now}\n\n`;
         const today = new Date();
@@ -1928,19 +2068,23 @@
         showToast('Email client opened.', 'success');
       }
 
-      // ---- REFRESH EVERYTHING ----
+      // ========================================================
+      // 13. REFRESH EVERYTHING
+      // ========================================================
       function refreshEverything() {
         try {
           renderTransactionTable();
           renderSummary();
-          console.log('✅ Full refresh complete.');
+          console.log('✅ Full refresh complete for user:', getUserName());
         } catch (e) {
           console.error('❌ Refresh error:', e);
           showToast('Error updating dashboard. Please refresh the page.', 'error');
         }
       }
 
-      // ---- ADD TRANSACTION ----
+      // ========================================================
+      // 14. ADD TRANSACTION
+      // ========================================================
       function addTransaction() {
         try {
           const date = document.getElementById('txDate').value.trim();
@@ -1989,7 +2133,9 @@
         }
       }
 
-      // ---- SET TARGET ----
+      // ========================================================
+      // 15. SET TARGET
+      // ========================================================
       function updateTarget() {
         const input = document.getElementById('targetInput');
         let val = parseFloat(input.value);
@@ -2001,41 +2147,55 @@
         showToast('Target updated to ' + val + '%', 'success');
       }
 
-      // ---- NAME ----
-      function saveName() {
-        const input = document.getElementById('userNameInput');
-        if (!input) return;
-        const val = input.value.trim();
-        if (val) { setUserName(val); } else { localStorage.removeItem(NAME_KEY); }
-        updateGreeting();
-      }
-
-      function loadName() {
-        const saved = getUserName();
-        const input = document.getElementById('userNameInput');
-        if (input) {
-          if (saved) { input.value = saved; } else {
-            input.value = '';
-            input.placeholder = 'your name';
-            setTimeout(() => input.focus(), 200);
-          }
-        }
-        updateGreeting();
-      }
-
-      // ---- RESET ----
-      window.resetAllData = function() {
-        if (confirm('⚠️ Delete ALL data? This cannot be undone.')) {
-          localStorage.removeItem(STORAGE_KEY);
-          localStorage.removeItem(TARGET_KEY);
-          localStorage.removeItem(NAME_KEY);
-          localStorage.removeItem(GOALS_KEY);
-          showToast('All data reset.', 'success');
+      // ========================================================
+      // 16. RESET
+      // ========================================================
+      function resetAllData() {
+        const user = getUserName();
+        if (!user) { showToast('No user found to reset.', 'error'); return; }
+        if (confirm(`⚠️ Delete ALL data for "${user}"? This cannot be undone.`)) {
+          const keys = getStorageKeys();
+          localStorage.removeItem(keys.entries);
+          localStorage.removeItem(keys.target);
+          localStorage.removeItem(keys.loans);
+          showToast('All data reset for ' + user, 'success');
           setTimeout(() => location.reload(), 800);
         }
-      };
+      }
 
-      // ---- TAB SWITCHING ----
+      // ========================================================
+      // 17. NAME OVERLAY
+      // ========================================================
+      function showNameOverlay() {
+        const overlay = document.getElementById('nameOverlay');
+        overlay.classList.remove('hidden');
+        const input = document.getElementById('userNameInputModal');
+        input.value = getUserName() || '';
+        input.focus();
+        input.select();
+      }
+
+      function hideNameOverlay() {
+        document.getElementById('nameOverlay').classList.add('hidden');
+      }
+
+      function handleNameSubmit() {
+        const input = document.getElementById('userNameInputModal');
+        const name = input.value.trim();
+        if (!name) {
+          showToast('Please enter your name.', 'error');
+          input.focus();
+          return;
+        }
+        setUserName(name);
+        hideNameOverlay();
+        refreshEverything();
+        showToast('Welcome, ' + name + '! 👋', 'success');
+      }
+
+      // ========================================================
+      // 18. TABS
+      // ========================================================
       function setupTabs() {
         const tabs = document.querySelectorAll('.tab-btn');
         const contents = document.querySelectorAll('.tab-content');
@@ -2053,7 +2213,7 @@
             if (target === 'summary') {
               setTimeout(() => {
                 updateChart();
-                console.log('📊 Chart refreshed after switching to Summary tab.');
+                renderLoans();
               }, 100);
             }
             if (target === 'transactions') {
@@ -2063,65 +2223,93 @@
         });
       }
 
-      // ---- INIT ----
+      // ========================================================
+      // 19. INIT
+      // ========================================================
       document.addEventListener('DOMContentLoaded', function() {
+        // Check if user exists
+        const savedName = localStorage.getItem(STORAGE_NAME_KEY);
+        if (savedName) {
+          currentUser = savedName;
+          document.getElementById('userNameDisplay').textContent = currentUser;
+          hideNameOverlay();
+        } else {
+          showNameOverlay();
+        }
+
+        // Setup tabs
         setupTabs();
 
+        // Reset button
         document.getElementById('resetDataBtn').addEventListener('click', function(e) {
           e.preventDefault();
-          window.resetAllData();
+          resetAllData();
         });
 
+        // Set default date
         document.getElementById('txDate').value = new Date().toISOString().split('T')[0];
+        document.getElementById('txDate').defaultValue = new Date().toISOString().split('T')[0];
+        document.getElementById('loanDate').value = new Date().toISOString().split('T')[0];
         document.getElementById('targetInput').value = getTarget();
 
+        // Init chart
         initChart();
-        loadName();
-        refreshEverything();
 
-        document.addEventListener('change', function(e) {
-          if (e.target && e.target.id === 'userNameInput') { saveName(); }
+        // Initial render
+        if (getUserName()) {
+          refreshEverything();
+        }
+
+        // Name overlay events
+        document.getElementById('nameSubmitBtn').addEventListener('click', handleNameSubmit);
+        document.getElementById('userNameInputModal').addEventListener('keypress', function(e) {
+          if (e.key === 'Enter') { e.preventDefault();
+            handleNameSubmit(); }
         });
-        document.addEventListener('blur', function(e) {
-          if (e.target && e.target.id === 'userNameInput') { saveName(); }
+        document.getElementById('changeNameBtn').addEventListener('click', function() {
+          showNameOverlay();
         });
 
+        // Update greeting every minute
         setInterval(updateGreeting, 60000);
 
+        // Add transaction
         document.getElementById('addBtn').addEventListener('click', addTransaction);
-
         ['txCategory', 'txAmount', 'txReason'].forEach(id => {
           const el = document.getElementById(id);
           if (el) {
             el.addEventListener('keypress', function(e) {
-              if (e.key === 'Enter') {
-                e.preventDefault();
-                addTransaction();
-              }
+              if (e.key === 'Enter') { e.preventDefault();
+                addTransaction(); }
             });
           }
         });
 
+        // Set target
         document.getElementById('setTargetBtn').addEventListener('click', updateTarget);
         document.getElementById('targetInput').addEventListener('keypress', function(e) {
-          if (e.key === 'Enter') {
-            e.preventDefault();
-            updateTarget();
-          }
+          if (e.key === 'Enter') { e.preventDefault();
+            updateTarget(); }
         });
 
+        // Weekly report
         document.getElementById('generateReportBtn').addEventListener('click', generateWeeklyReport);
         document.getElementById('printReportBtn').addEventListener('click', function() { window.print(); });
         document.getElementById('emailReportBtn').addEventListener('click', sendReportViaEmail);
 
-        document.getElementById('addGoalBtn').addEventListener('click', addGoal);
-        document.getElementById('goalTitle').addEventListener('keypress', function(e) {
+        // Loan add
+        document.getElementById('addLoanBtn').addEventListener('click', addLoan);
+        document.getElementById('loanPerson').addEventListener('keypress', function(e) {
           if (e.key === 'Enter') { e.preventDefault();
-            document.getElementById('goalTarget').focus(); }
+            document.getElementById('loanAmount').focus(); }
         });
-        document.getElementById('goalTarget').addEventListener('keypress', function(e) {
+        document.getElementById('loanAmount').addEventListener('keypress', function(e) {
           if (e.key === 'Enter') { e.preventDefault();
-            addGoal(); }
+            addLoan(); }
+        });
+        document.getElementById('loanNotes').addEventListener('keypress', function(e) {
+          if (e.key === 'Enter') { e.preventDefault();
+            addLoan(); }
         });
       });
     })();
