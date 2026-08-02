@@ -8,7 +8,6 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
   <style>
-    /* ... (same styles as before for brevity) ... */
     * {
       margin: 0;
       padding: 0;
@@ -70,12 +69,14 @@
       z-index: 1;
       border: 1px solid rgba(255,255,255,0.4);
     }
+
+    /* ---- TOP BAR ---- */
     .top-bar {
       display: flex;
       flex-wrap: wrap;
       align-items: center;
       justify-content: space-between;
-      margin-bottom: 28px;
+      margin-bottom: 20px;
       padding-bottom: 16px;
       border-bottom: 1px solid var(--gray-200);
       gap: 12px;
@@ -109,6 +110,7 @@
       color: var(--gray-500);
       font-size: 16px;
     }
+
     .greeting-box {
       display: flex;
       align-items: center;
@@ -180,6 +182,53 @@
       border: 1px solid var(--gray-300);
       white-space: nowrap;
     }
+
+    /* ---- TABS ---- */
+    .tabs {
+      display: flex;
+      gap: 4px;
+      margin-bottom: 24px;
+      border-bottom: 2px solid var(--gray-200);
+      padding-bottom: 0;
+    }
+    .tab-btn {
+      padding: 10px 24px;
+      border: none;
+      background: transparent;
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--gray-500);
+      cursor: pointer;
+      border-bottom: 3px solid transparent;
+      transition: all 0.2s ease;
+      margin-bottom: -2px;
+      border-radius: 8px 8px 0 0;
+    }
+    .tab-btn:hover {
+      color: var(--gray-700);
+      background: var(--gray-50);
+    }
+    .tab-btn.active {
+      color: var(--secondary);
+      border-bottom-color: var(--secondary);
+      background: #eff6ff;
+    }
+    .tab-btn i {
+      margin-right: 8px;
+    }
+    .tab-content {
+      display: none;
+      animation: fadeIn 0.25s ease;
+    }
+    .tab-content.active {
+      display: block;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ---- KPI GRID (Summary Tab) ---- */
     .kpi-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
@@ -265,6 +314,8 @@
     .kpi-card.expense-rate .value {
       color: var(--info);
     }
+
+    /* ---- CHARTS ---- */
     .charts-row {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -359,6 +410,7 @@
       background: #f5f3ff;
       border-color: #ddd6fe;
     }
+
     .expense-legend {
       display: flex;
       flex-wrap: wrap;
@@ -391,6 +443,8 @@
       padding: 20px 0;
       font-size: 14px;
     }
+
+    /* ---- GAUGE ---- */
     .gauge-section {
       background: var(--gray-50);
       border-radius: var(--radius-lg);
@@ -521,12 +575,14 @@
       background: var(--gray-800);
       transform: scale(1.02);
     }
+
+    /* ---- FORM (Transactions Tab) ---- */
     .form-row {
       background: var(--gray-50);
       border: 1px solid var(--gray-200);
       border-radius: var(--radius-lg);
       padding: 18px 22px;
-      margin-bottom: 28px;
+      margin-bottom: 24px;
       display: flex;
       flex-wrap: wrap;
       gap: 12px 18px;
@@ -596,6 +652,8 @@
       border: 1px solid var(--gray-200);
       white-space: nowrap;
     }
+
+    /* ---- TABLE (Transactions Tab) ---- */
     .table-wrap {
       overflow-x: auto;
       border-radius: var(--radius);
@@ -681,6 +739,8 @@
       padding: 32px 0;
       font-style: italic;
     }
+
+    /* ---- CATEGORY BREAKDOWN (Summary Tab) ---- */
     .category-breakdown {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -729,6 +789,8 @@
       font-weight: 600;
       color: var(--gray-800);
     }
+
+    /* ---- GOALS ---- */
     .goals-section {
       margin-top: 32px;
       background: var(--gray-50);
@@ -933,6 +995,8 @@
       text-align: center;
       grid-column: 1 / -1;
     }
+
+    /* ---- WEEKLY REPORT ---- */
     .weekly-report {
       margin-top: 32px;
       background: var(--gray-50);
@@ -1079,6 +1143,8 @@
       text-align: center;
       padding: 30px 0;
     }
+
+    /* ---- TOAST ---- */
     .toast {
       position: fixed;
       bottom: 30px;
@@ -1113,6 +1179,8 @@
     .toast i {
       font-size: 20px;
     }
+
+    /* ---- FOOTER ---- */
     .footer-note {
       margin-top: 28px;
       padding-top: 18px;
@@ -1157,6 +1225,7 @@
     .reset-btn:active {
       transform: scale(0.96);
     }
+
     @media (max-width: 768px) {
       .container {
         padding: 18px 16px;
@@ -1230,6 +1299,15 @@
         left: 20px;
         max-width: none;
       }
+      .tabs .tab-btn {
+        flex: 1;
+        text-align: center;
+        padding: 10px 12px;
+        font-size: 13px;
+      }
+      .tabs .tab-btn i {
+        margin-right: 4px;
+      }
     }
   </style>
 </head>
@@ -1237,6 +1315,7 @@
 
   <div class="container">
 
+    <!-- TOP BAR -->
     <div class="top-bar">
       <div class="brand">
         <div class="logo-icon"><i class="fas fa-wallet"></i></div>
@@ -1253,92 +1332,113 @@
       </div>
     </div>
 
-    <div class="kpi-grid">
-      <div class="kpi-card income"><div class="label"><i class="fas fa-arrow-up"></i> Total Income</div><div class="value" id="totalIncome">LKR 0</div><div class="sub">All time</div></div>
-      <div class="kpi-card expenses"><div class="label"><i class="fas fa-arrow-down"></i> Total Expenses</div><div class="value" id="totalExpenses">LKR 0</div><div class="sub">All time</div></div>
-      <div class="kpi-card net"><div class="label"><i class="fas fa-piggy-bank"></i> Net Savings</div><div class="value" id="netSavings">LKR 0</div><div class="sub">Income – Expenses</div></div>
-      <div class="kpi-card savings-rate"><div class="label"><i class="fas fa-percent"></i> Savings Rate</div><div class="value" id="savingsRate">0%</div><div class="sub">of total income</div></div>
-      <div class="kpi-card expense-rate"><div class="label"><i class="fas fa-percent"></i> Expense Rate</div><div class="value" id="expenseRate">0%</div><div class="sub">of total income</div></div>
+    <!-- TABS -->
+    <div class="tabs" id="tabContainer">
+      <button class="tab-btn active" data-tab="transactions"><i class="fas fa-list-ul"></i> Transactions</button>
+      <button class="tab-btn" data-tab="summary"><i class="fas fa-chart-pie"></i> Summary</button>
     </div>
 
-    <div class="charts-row">
-      <div class="chart-card">
-        <div class="chart-title"><i class="fas fa-chart-pie"></i> Income vs Expenses</div>
-        <div class="chart-wrapper"><canvas id="incomeExpenseChart"></canvas></div>
-        <div class="chart-stats">
-          <div class="stat-row"><span class="label"><span class="dot" style="background:var(--success);"></span> Income</span><span class="amount income" id="chartIncome">LKR 0</span></div>
-          <div class="stat-row"><span class="label"><span class="dot" style="background:var(--danger);"></span> Expenses</span><span class="amount expense" id="chartExpenses">LKR 0</span></div>
-          <div class="stat-row net-row"><span class="label"><i class="fas fa-piggy-bank" style="color:var(--accent);"></i> Net</span><span class="amount accent" id="chartNet">LKR 0</span></div>
+    <!-- ===== TAB 1: TRANSACTIONS ===== -->
+    <div class="tab-content active" id="tab-transactions">
+      <!-- Add Form -->
+      <div class="form-row">
+        <div class="field" style="flex:0 0 150px;"><label for="txDate"><i class="far fa-calendar-alt"></i> Date</label><input type="date" id="txDate" /></div>
+        <div class="field" style="flex:0 0 130px;"><label for="txType"><i class="fas fa-tag"></i> Type</label><select id="txType"><option value="income">Income</option><option value="expense">Expense</option></select></div>
+        <div class="field"><label for="txCategory"><i class="fas fa-folder"></i> Category</label><input type="text" id="txCategory" placeholder="e.g. Freelance" /></div>
+        <div class="field" style="flex:0 0 130px;"><label for="txAmount"><i class="fas fa-coins"></i> Amount (LKR)</label><input type="number" id="txAmount" placeholder="0" step="0.01" min="0" /></div>
+        <div class="field" style="flex:2;"><label for="txReason"><i class="fas fa-pen"></i> Reason</label><input type="text" id="txReason" placeholder="Optional note" /></div>
+        <button class="btn-add" id="addBtn"><i class="fas fa-plus-circle"></i> Add</button>
+        <span class="batch-hint"><i class="fas fa-sync-alt"></i> Category stays</span>
+      </div>
+
+      <!-- Transaction Table -->
+      <div class="table-wrap">
+        <table class="transaction-table">
+          <thead><tr><th>Date</th><th>Type</th><th>Category</th><th style="text-align:right;">Amount</th><th>Reason</th><th style="width:40px;"></th></tr></thead>
+          <tbody id="txBody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ===== TAB 2: SUMMARY ===== -->
+    <div class="tab-content" id="tab-summary">
+      <!-- KPI Cards -->
+      <div class="kpi-grid">
+        <div class="kpi-card income"><div class="label"><i class="fas fa-arrow-up"></i> Total Income</div><div class="value" id="totalIncome">LKR 0</div><div class="sub">All time</div></div>
+        <div class="kpi-card expenses"><div class="label"><i class="fas fa-arrow-down"></i> Total Expenses</div><div class="value" id="totalExpenses">LKR 0</div><div class="sub">All time</div></div>
+        <div class="kpi-card net"><div class="label"><i class="fas fa-piggy-bank"></i> Net Savings</div><div class="value" id="netSavings">LKR 0</div><div class="sub">Income – Expenses</div></div>
+        <div class="kpi-card savings-rate"><div class="label"><i class="fas fa-percent"></i> Savings Rate</div><div class="value" id="savingsRate">0%</div><div class="sub">of total income</div></div>
+        <div class="kpi-card expense-rate"><div class="label"><i class="fas fa-percent"></i> Expense Rate</div><div class="value" id="expenseRate">0%</div><div class="sub">of total income</div></div>
+      </div>
+
+      <!-- Charts -->
+      <div class="charts-row">
+        <div class="chart-card">
+          <div class="chart-title"><i class="fas fa-chart-pie"></i> Income vs Expenses</div>
+          <div class="chart-wrapper"><canvas id="incomeExpenseChart"></canvas></div>
+          <div class="chart-stats">
+            <div class="stat-row"><span class="label"><span class="dot" style="background:var(--success);"></span> Income</span><span class="amount income" id="chartIncome">LKR 0</span></div>
+            <div class="stat-row"><span class="label"><span class="dot" style="background:var(--danger);"></span> Expenses</span><span class="amount expense" id="chartExpenses">LKR 0</span></div>
+            <div class="stat-row net-row"><span class="label"><i class="fas fa-piggy-bank" style="color:var(--accent);"></i> Net</span><span class="amount accent" id="chartNet">LKR 0</span></div>
+          </div>
+        </div>
+        <div class="chart-card">
+          <div class="chart-title"><i class="fas fa-chart-pie" style="color:var(--danger);"></i> Expense Breakdown</div>
+          <div class="chart-wrapper"><canvas id="expenseCategoryChart"></canvas></div>
+          <div id="expenseLegendContainer"></div>
         </div>
       </div>
-      <div class="chart-card">
-        <div class="chart-title"><i class="fas fa-chart-pie" style="color:var(--danger);"></i> Expense Breakdown</div>
-        <div class="chart-wrapper"><canvas id="expenseCategoryChart"></canvas></div>
-        <div id="expenseLegendContainer"></div>
-      </div>
-    </div>
 
-    <div class="gauge-section">
-      <div class="gauge-info">
-        <div class="gauge-label"><i class="fas fa-flag-checkered"></i> Savings Target <span id="targetLabel">80%</span></div>
-        <div class="gauge-wrapper">
-          <div class="gauge-bar-bg"><div class="gauge-bar-fill" id="gaugeFill" style="width:0%;"></div></div>
-          <span class="gauge-percent" id="gaugePercent">0%</span>
+      <!-- Savings Target Gauge -->
+      <div class="gauge-section">
+        <div class="gauge-info">
+          <div class="gauge-label"><i class="fas fa-flag-checkered"></i> Savings Target <span id="targetLabel">80%</span></div>
+          <div class="gauge-wrapper">
+            <div class="gauge-bar-bg"><div class="gauge-bar-fill" id="gaugeFill" style="width:0%;"></div></div>
+            <span class="gauge-percent" id="gaugePercent">0%</span>
+          </div>
         </div>
-      </div>
-      <div class="target-input-area">
-        <label for="targetInput"><i class="fas fa-edit"></i> Set</label>
-        <input type="number" id="targetInput" min="0" max="100" value="80" />
-        <button id="setTargetBtn">Update</button>
-      </div>
-      <span class="gauge-status" id="gaugeStatus">—</span>
-    </div>
-
-    <div class="form-row">
-      <div class="field" style="flex:0 0 150px;"><label for="txDate"><i class="far fa-calendar-alt"></i> Date</label><input type="date" id="txDate" /></div>
-      <div class="field" style="flex:0 0 130px;"><label for="txType"><i class="fas fa-tag"></i> Type</label><select id="txType"><option value="income">Income</option><option value="expense">Expense</option></select></div>
-      <div class="field"><label for="txCategory"><i class="fas fa-folder"></i> Category</label><input type="text" id="txCategory" placeholder="e.g. Freelance" /></div>
-      <div class="field" style="flex:0 0 130px;"><label for="txAmount"><i class="fas fa-coins"></i> Amount (LKR)</label><input type="number" id="txAmount" placeholder="0" step="0.01" min="0" /></div>
-      <div class="field" style="flex:2;"><label for="txReason"><i class="fas fa-pen"></i> Reason</label><input type="text" id="txReason" placeholder="Optional note" /></div>
-      <button class="btn-add" id="addBtn"><i class="fas fa-plus-circle"></i> Add</button>
-      <span class="batch-hint"><i class="fas fa-sync-alt"></i> Category stays</span>
-    </div>
-
-    <div class="table-wrap">
-      <table class="transaction-table">
-        <thead><tr><th>Date</th><th>Type</th><th>Category</th><th style="text-align:right;">Amount</th><th>Reason</th><th style="width:40px;"></th></tr></thead>
-        <tbody id="txBody"></tbody>
-      </table>
-    </div>
-
-    <div class="category-breakdown">
-      <div class="cat-section"><h4><i class="fas fa-arrow-up" style="color:var(--success);"></i> Income by Category</h4><div id="incomeCategoryList"></div></div>
-      <div class="cat-section"><h4><i class="fas fa-arrow-down" style="color:var(--danger);"></i> Expenses by Category</h4><div id="expenseCategoryList"></div></div>
-    </div>
-
-    <div class="goals-section" id="goalsSection">
-      <div class="goals-header"><h3><i class="fas fa-bullseye"></i> Financial Goals</h3></div>
-      <div class="add-goal-form" id="addGoalForm">
-        <div class="field"><label for="goalType"><i class="fas fa-tag"></i> Type</label><select id="goalType"><option value="savings">Savings</option><option value="income">Income</option><option value="expense">Expense</option></select></div>
-        <div class="field"><label for="goalTitle"><i class="fas fa-heading"></i> Title</label><input type="text" id="goalTitle" placeholder="e.g. Emergency Fund" /></div>
-        <div class="field"><label for="goalTarget"><i class="fas fa-coins"></i> Target (LKR)</label><input type="number" id="goalTarget" placeholder="0" step="0.01" min="0" /></div>
-        <button class="btn-add-goal" id="addGoalBtn"><i class="fas fa-plus-circle"></i> Add Goal</button>
-      </div>
-      <div class="goals-list" id="goalsList"></div>
-    </div>
-
-    <div class="weekly-report" id="weeklyReportSection">
-      <div class="report-header">
-        <h3><i class="fas fa-chart-line"></i> Weekly Financial Report</h3>
-        <div class="report-actions">
-          <button id="generateReportBtn"><i class="fas fa-sync-alt"></i> Generate</button>
-          <button id="printReportBtn"><i class="fas fa-print"></i> Print / PDF</button>
-          <button id="emailReportBtn" class="primary"><i class="fas fa-envelope"></i> Send via Email</button>
+        <div class="target-input-area">
+          <label for="targetInput"><i class="fas fa-edit"></i> Set</label>
+          <input type="number" id="targetInput" min="0" max="100" value="80" />
+          <button id="setTargetBtn">Update</button>
         </div>
+        <span class="gauge-status" id="gaugeStatus">—</span>
       </div>
-      <div class="report-content" id="reportContent"></div>
+
+      <!-- Category Breakdown -->
+      <div class="category-breakdown">
+        <div class="cat-section"><h4><i class="fas fa-arrow-up" style="color:var(--success);"></i> Income by Category</h4><div id="incomeCategoryList"></div></div>
+        <div class="cat-section"><h4><i class="fas fa-arrow-down" style="color:var(--danger);"></i> Expenses by Category</h4><div id="expenseCategoryList"></div></div>
+      </div>
+
+      <!-- Goals -->
+      <div class="goals-section" id="goalsSection">
+        <div class="goals-header"><h3><i class="fas fa-bullseye"></i> Financial Goals</h3></div>
+        <div class="add-goal-form" id="addGoalForm">
+          <div class="field"><label for="goalType"><i class="fas fa-tag"></i> Type</label><select id="goalType"><option value="savings">Savings</option><option value="income">Income</option><option value="expense">Expense</option></select></div>
+          <div class="field"><label for="goalTitle"><i class="fas fa-heading"></i> Title</label><input type="text" id="goalTitle" placeholder="e.g. Emergency Fund" /></div>
+          <div class="field"><label for="goalTarget"><i class="fas fa-coins"></i> Target (LKR)</label><input type="number" id="goalTarget" placeholder="0" step="0.01" min="0" /></div>
+          <button class="btn-add-goal" id="addGoalBtn"><i class="fas fa-plus-circle"></i> Add Goal</button>
+        </div>
+        <div class="goals-list" id="goalsList"></div>
+      </div>
+
+      <!-- Weekly Report -->
+      <div class="weekly-report" id="weeklyReportSection">
+        <div class="report-header">
+          <h3><i class="fas fa-chart-line"></i> Weekly Financial Report</h3>
+          <div class="report-actions">
+            <button id="generateReportBtn"><i class="fas fa-sync-alt"></i> Generate</button>
+            <button id="printReportBtn"><i class="fas fa-print"></i> Print / PDF</button>
+            <button id="emailReportBtn" class="primary"><i class="fas fa-envelope"></i> Send via Email</button>
+          </div>
+        </div>
+        <div class="report-content" id="reportContent"></div>
+      </div>
     </div>
 
+    <!-- FOOTER -->
     <div class="footer-note">
       <span class="left"><i class="fas fa-database"></i> Data stored locally in your browser</span>
       <button class="reset-btn" id="resetDataBtn"><i class="fas fa-trash-alt"></i> Reset All Data</button>
@@ -1542,7 +1642,7 @@
           minute: '2-digit' });
       }
 
-      // ---- RENDER TABLE (CRITICAL FIX) ----
+      // ---- RENDER TABLE (Transactions Tab) ----
       function renderTransactionTable() {
         const tbody = document.getElementById('txBody');
         if (!tbody) {
@@ -1550,9 +1650,8 @@
           return;
         }
 
-        // Get fresh entries directly from localStorage
         const entries = getEntries();
-        console.log('Rendering table with', entries.length, 'entries');
+        console.log('📊 Rendering table with', entries.length, 'entries');
 
         if (!entries || entries.length === 0) {
           tbody.innerHTML =
@@ -1561,7 +1660,6 @@
         }
 
         let html = '';
-        // Sort by date descending (newest first)
         const sorted = [...entries].sort((a, b) => (a.date < b.date ? 1 : -1));
         sorted.forEach((e) => {
           const date = e.date || '—';
@@ -1572,8 +1670,7 @@
           const typeLabel = type === 'income' ? 'Income' : 'Expense';
           const amountClass = type === 'income' ? 'income' : 'expense';
           const sign = type === 'income' ? '+' : '-';
-          // Use unique id based on date+type+amount+category to avoid key issues
-          const idx = entries.indexOf(e); // original index for deletion
+          const idx = entries.indexOf(e);
           html += `
               <tr>
                 <td>${date}</td>
@@ -1587,7 +1684,6 @@
         });
         tbody.innerHTML = html;
 
-        // Re-bind delete events
         document.querySelectorAll('.delete-btn').forEach(btn => {
           btn.addEventListener('click', function() {
             const idx = parseInt(this.getAttribute('data-index'), 10);
@@ -1600,6 +1696,62 @@
             }
           });
         });
+      }
+
+      // ---- RENDER SUMMARY ----
+      function renderSummary() {
+        const entries = getEntries();
+        const target = getTarget();
+        const { totalIncome, totalExpenses, net } = computeTotals(entries);
+
+        // KPIs
+        document.getElementById('totalIncome').textContent = 'LKR ' + totalIncome.toLocaleString(undefined, { maximumFractionDigits: 2 });
+        document.getElementById('totalExpenses').textContent = 'LKR ' + totalExpenses.toLocaleString(undefined, { maximumFractionDigits: 2 });
+        document.getElementById('netSavings').textContent = 'LKR ' + net.toLocaleString(undefined, { maximumFractionDigits: 2 });
+
+        const savingsRate = totalIncome > 0 ? (net / totalIncome) * 100 : 0;
+        const expenseRate = totalIncome > 0 ? (totalExpenses / totalIncome) * 100 : 0;
+        document.getElementById('savingsRate').textContent = savingsRate.toFixed(1) + '%';
+        document.getElementById('expenseRate').textContent = expenseRate.toFixed(1) + '%';
+
+        // Gauge
+        document.getElementById('targetLabel').textContent = target + '%';
+        document.getElementById('displayTarget').textContent = target;
+        const gaugeFill = document.getElementById('gaugeFill');
+        const gaugePercent = document.getElementById('gaugePercent');
+        const gaugeStatus = document.getElementById('gaugeStatus');
+        let fillPercent = Math.min((savingsRate / target) * 100, 100);
+        if (totalIncome === 0) fillPercent = 0;
+        gaugeFill.style.width = fillPercent + '%';
+        gaugePercent.textContent = savingsRate.toFixed(1) + '%';
+
+        if (totalIncome === 0) {
+          gaugeStatus.textContent = 'No income yet';
+          gaugeStatus.className = 'gauge-status';
+        } else if (savingsRate >= target) {
+          gaugeStatus.textContent = '🎯 On track!';
+          gaugeStatus.className = 'gauge-status on-track';
+        } else {
+          gaugeStatus.textContent = '⚠️ Below target';
+          gaugeStatus.className = 'gauge-status off-track';
+        }
+
+        // Charts
+        updateCharts();
+
+        // Category breakdown
+        renderCategoryBreakdown(entries);
+
+        // Goals
+        renderGoals();
+
+        // Weekly report
+        generateWeeklyReport();
+
+        // Greeting
+        updateGreeting();
+
+        console.log('✅ Summary rendered – ' + entries.length + ' transactions.');
       }
 
       // ---- CATEGORY BREAKDOWN ----
@@ -1797,61 +1949,13 @@
       // ---- REFRESH EVERYTHING ----
       function refreshEverything() {
         try {
-          const entries = getEntries();
-          const target = getTarget();
-          const { totalIncome, totalExpenses, net } = computeTotals(entries);
-
-          // KPIs
-          document.getElementById('totalIncome').textContent = 'LKR ' + totalIncome.toLocaleString(undefined, { maximumFractionDigits: 2 });
-          document.getElementById('totalExpenses').textContent = 'LKR ' + totalExpenses.toLocaleString(undefined, { maximumFractionDigits: 2 });
-          document.getElementById('netSavings').textContent = 'LKR ' + net.toLocaleString(undefined, { maximumFractionDigits: 2 });
-
-          const savingsRate = totalIncome > 0 ? (net / totalIncome) * 100 : 0;
-          const expenseRate = totalIncome > 0 ? (totalExpenses / totalIncome) * 100 : 0;
-          document.getElementById('savingsRate').textContent = savingsRate.toFixed(1) + '%';
-          document.getElementById('expenseRate').textContent = expenseRate.toFixed(1) + '%';
-
-          // Gauge
-          document.getElementById('targetLabel').textContent = target + '%';
-          document.getElementById('displayTarget').textContent = target;
-          const gaugeFill = document.getElementById('gaugeFill');
-          const gaugePercent = document.getElementById('gaugePercent');
-          const gaugeStatus = document.getElementById('gaugeStatus');
-          let fillPercent = Math.min((savingsRate / target) * 100, 100);
-          if (totalIncome === 0) fillPercent = 0;
-          gaugeFill.style.width = fillPercent + '%';
-          gaugePercent.textContent = savingsRate.toFixed(1) + '%';
-
-          if (totalIncome === 0) {
-            gaugeStatus.textContent = 'No income yet';
-            gaugeStatus.className = 'gauge-status';
-          } else if (savingsRate >= target) {
-            gaugeStatus.textContent = '🎯 On track!';
-            gaugeStatus.className = 'gauge-status on-track';
-          } else {
-            gaugeStatus.textContent = '⚠️ Below target';
-            gaugeStatus.className = 'gauge-status off-track';
-          }
-
-          // Charts
-          updateCharts();
-
-          // ----- TABLE (explicitly rendered here) -----
+          // Render table (Transactions tab)
           renderTransactionTable();
 
-          // Category breakdown
-          renderCategoryBreakdown(entries);
+          // Render summary (Summary tab)
+          renderSummary();
 
-          // Goals
-          renderGoals();
-
-          // Weekly report
-          generateWeeklyReport();
-
-          // Greeting
-          updateGreeting();
-
-          console.log('✅ Refresh complete – ' + entries.length + ' transactions.');
+          console.log('✅ Full refresh complete.');
         } catch (e) {
           console.error('❌ Refresh error:', e);
           showToast('Error updating dashboard. Please refresh the page.', 'error');
@@ -1898,9 +2002,8 @@
           // Clear amount & reason – keep category for next entry
           document.getElementById('txAmount').value = '';
           document.getElementById('txReason').value = '';
-          document.getElementById('txAmount').focus(); // focus on amount for next entry
+          document.getElementById('txAmount').focus();
 
-          // Force full refresh
           refreshEverything();
           showToast('✅ Transaction added!', 'success');
         } catch (e) {
@@ -1955,20 +2058,52 @@
         }
       };
 
+      // ---- TAB SWITCHING ----
+      function setupTabs() {
+        const tabs = document.querySelectorAll('.tab-btn');
+        const contents = document.querySelectorAll('.tab-content');
+
+        tabs.forEach(tab => {
+          tab.addEventListener('click', function() {
+            const target = this.getAttribute('data-tab');
+
+            // Update tabs
+            tabs.forEach(t => t.classList.remove('active'));
+            this.classList.add('active');
+
+            // Update contents
+            contents.forEach(c => c.classList.remove('active'));
+            document.getElementById('tab-' + target).classList.add('active');
+
+            // Re-render table when switching to transactions tab
+            if (target === 'transactions') {
+              renderTransactionTable();
+            }
+          });
+        });
+      }
+
       // ---- INIT ----
       document.addEventListener('DOMContentLoaded', function() {
+        // Setup tabs
+        setupTabs();
+
+        // Reset button
         document.getElementById('resetDataBtn').addEventListener('click', function(e) {
           e.preventDefault();
           window.resetAllData();
         });
 
+        // Set default date
         document.getElementById('txDate').value = new Date().toISOString().split('T')[0];
         document.getElementById('targetInput').value = getTarget();
 
+        // Init charts
         initCharts();
         loadName();
         refreshEverything();
 
+        // Name events
         document.addEventListener('change', function(e) {
           if (e.target && e.target.id === 'userNameInput') { saveName(); }
         });
@@ -1978,8 +2113,10 @@
 
         setInterval(updateGreeting, 60000);
 
+        // Add button
         document.getElementById('addBtn').addEventListener('click', addTransaction);
 
+        // Enter key on form fields
         ['txCategory', 'txAmount', 'txReason'].forEach(id => {
           const el = document.getElementById(id);
           if (el) {
@@ -1992,6 +2129,7 @@
           }
         });
 
+        // Target update
         document.getElementById('setTargetBtn').addEventListener('click', updateTarget);
         document.getElementById('targetInput').addEventListener('keypress', function(e) {
           if (e.key === 'Enter') {
@@ -2000,10 +2138,12 @@
           }
         });
 
+        // Report actions
         document.getElementById('generateReportBtn').addEventListener('click', generateWeeklyReport);
         document.getElementById('printReportBtn').addEventListener('click', function() { window.print(); });
         document.getElementById('emailReportBtn').addEventListener('click', sendReportViaEmail);
 
+        // Goal add
         document.getElementById('addGoalBtn').addEventListener('click', addGoal);
         document.getElementById('goalTitle').addEventListener('keypress', function(e) {
           if (e.key === 'Enter') { e.preventDefault();
@@ -2013,6 +2153,14 @@
           if (e.key === 'Enter') { e.preventDefault();
             addGoal(); }
         });
+
+        // Re-render table when transactions tab becomes visible
+        const txTab = document.querySelector('[data-tab="transactions"]');
+        if (txTab) {
+          txTab.addEventListener('click', function() {
+            setTimeout(renderTransactionTable, 50);
+          });
+        }
       });
     })();
   </script>
