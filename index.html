@@ -8,6 +8,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
   <style>
+    /* ... (same styles as before for brevity) ... */
     * {
       margin: 0;
       padding: 0;
@@ -69,7 +70,6 @@
       z-index: 1;
       border: 1px solid rgba(255,255,255,0.4);
     }
-
     .top-bar {
       display: flex;
       flex-wrap: wrap;
@@ -109,7 +109,6 @@
       color: var(--gray-500);
       font-size: 16px;
     }
-
     .greeting-box {
       display: flex;
       align-items: center;
@@ -181,7 +180,6 @@
       border: 1px solid var(--gray-300);
       white-space: nowrap;
     }
-
     .kpi-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
@@ -267,7 +265,6 @@
     .kpi-card.expense-rate .value {
       color: var(--info);
     }
-
     .charts-row {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -311,7 +308,6 @@
       width: 100% !important;
       height: auto !important;
     }
-
     .chart-stats {
       display: flex;
       flex-direction: column;
@@ -363,7 +359,6 @@
       background: #f5f3ff;
       border-color: #ddd6fe;
     }
-
     .expense-legend {
       display: flex;
       flex-wrap: wrap;
@@ -396,7 +391,6 @@
       padding: 20px 0;
       font-size: 14px;
     }
-
     .gauge-section {
       background: var(--gray-50);
       border-radius: var(--radius-lg);
@@ -527,7 +521,6 @@
       background: var(--gray-800);
       transform: scale(1.02);
     }
-
     .form-row {
       background: var(--gray-50);
       border: 1px solid var(--gray-200);
@@ -603,7 +596,6 @@
       border: 1px solid var(--gray-200);
       white-space: nowrap;
     }
-
     .table-wrap {
       overflow-x: auto;
       border-radius: var(--radius);
@@ -689,7 +681,6 @@
       padding: 32px 0;
       font-style: italic;
     }
-
     .category-breakdown {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -738,7 +729,6 @@
       font-weight: 600;
       color: var(--gray-800);
     }
-
     .goals-section {
       margin-top: 32px;
       background: var(--gray-50);
@@ -943,7 +933,6 @@
       text-align: center;
       grid-column: 1 / -1;
     }
-
     .weekly-report {
       margin-top: 32px;
       background: var(--gray-50);
@@ -1090,7 +1079,6 @@
       text-align: center;
       padding: 30px 0;
     }
-
     .toast {
       position: fixed;
       bottom: 30px;
@@ -1125,7 +1113,6 @@
     .toast i {
       font-size: 20px;
     }
-
     .footer-note {
       margin-top: 28px;
       padding-top: 18px;
@@ -1170,7 +1157,6 @@
     .reset-btn:active {
       transform: scale(0.96);
     }
-
     @media (max-width: 768px) {
       .container {
         padding: 18px 16px;
@@ -1387,10 +1373,25 @@
       const NAME_KEY = 'userName';
       const GOALS_KEY = 'financeGoals';
 
-      function getEntries() { try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || []; } catch (e) { return []; } }
+      function getEntries() {
+        try {
+          const raw = localStorage.getItem(STORAGE_KEY);
+          if (!raw) return [];
+          const parsed = JSON.parse(raw);
+          return Array.isArray(parsed) ? parsed : [];
+        } catch (e) {
+          console.error('Error reading entries:', e);
+          return [];
+        }
+      }
 
-      function saveEntries(entries) { try { localStorage.setItem(STORAGE_KEY, JSON.stringify(entries)); } catch (e) { console.error(
-            'Save error:', e); } }
+      function saveEntries(entries) {
+        try {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(entries));
+        } catch (e) {
+          console.error('Save error:', e);
+        }
+      }
 
       function getTarget() { try { const v = parseFloat(localStorage.getItem(TARGET_KEY)); return isNaN(v) ? 80 : v; } catch { return 80; } }
 
@@ -1541,14 +1542,19 @@
           minute: '2-digit' });
       }
 
-      // ---- RENDER TABLE ----
-      function renderTransactionTable(entries) {
+      // ---- RENDER TABLE (CRITICAL FIX) ----
+      function renderTransactionTable() {
         const tbody = document.getElementById('txBody');
         if (!tbody) {
-          console.error('Table body not found');
+          console.error('Table body not found!');
           return;
         }
-        if (entries.length === 0) {
+
+        // Get fresh entries directly from localStorage
+        const entries = getEntries();
+        console.log('Rendering table with', entries.length, 'entries');
+
+        if (!entries || entries.length === 0) {
           tbody.innerHTML =
             `<tr><td colspan="6" class="empty-msg"><i class="far fa-hourglass"></i> No transactions yet. Add your first one!</td></tr>`;
           return;
@@ -1557,8 +1563,7 @@
         let html = '';
         // Sort by date descending (newest first)
         const sorted = [...entries].sort((a, b) => (a.date < b.date ? 1 : -1));
-        sorted.forEach((e, idx) => {
-          const realIdx = entries.indexOf(e); // original index for deletion
+        sorted.forEach((e) => {
           const date = e.date || '—';
           const type = e.type || 'income';
           const category = e.category || '—';
@@ -1567,6 +1572,8 @@
           const typeLabel = type === 'income' ? 'Income' : 'Expense';
           const amountClass = type === 'income' ? 'income' : 'expense';
           const sign = type === 'income' ? '+' : '-';
+          // Use unique id based on date+type+amount+category to avoid key issues
+          const idx = entries.indexOf(e); // original index for deletion
           html += `
               <tr>
                 <td>${date}</td>
@@ -1574,13 +1581,13 @@
                 <td>${category}</td>
                 <td class="amount ${amountClass}">${sign} LKR ${amount.toLocaleString(undefined, { maximumFractionDigits: 2 })}</td>
                 <td>${reason}</td>
-                <td><button class="delete-btn" data-index="${realIdx}" title="Delete"><i class="fas fa-trash-alt"></i></button></td>
+                <td><button class="delete-btn" data-index="${idx}" title="Delete"><i class="fas fa-trash-alt"></i></button></td>
               </tr>
             `;
         });
         tbody.innerHTML = html;
 
-        // Attach delete events
+        // Re-bind delete events
         document.querySelectorAll('.delete-btn').forEach(btn => {
           btn.addEventListener('click', function() {
             const idx = parseInt(this.getAttribute('data-index'), 10);
@@ -1829,8 +1836,8 @@
           // Charts
           updateCharts();
 
-          // Table
-          renderTransactionTable(entries);
+          // ----- TABLE (explicitly rendered here) -----
+          renderTransactionTable();
 
           // Category breakdown
           renderCategoryBreakdown(entries);
@@ -1893,6 +1900,7 @@
           document.getElementById('txReason').value = '';
           document.getElementById('txAmount').focus(); // focus on amount for next entry
 
+          // Force full refresh
           refreshEverything();
           showToast('✅ Transaction added!', 'success');
         } catch (e) {
