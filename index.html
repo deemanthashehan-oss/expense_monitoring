@@ -1315,7 +1315,7 @@
       <div class="field" style="flex:0 0 130px;"><label for="txAmount"><i class="fas fa-coins"></i> Amount (LKR)</label><input type="number" id="txAmount" placeholder="0" step="0.01" min="0" /></div>
       <div class="field" style="flex:2;"><label for="txReason"><i class="fas fa-pen"></i> Reason</label><input type="text" id="txReason" placeholder="Optional note" /></div>
       <button class="btn-add" id="addBtn"><i class="fas fa-plus-circle"></i> Add</button>
-      <span class="batch-hint"><i class="fas fa-sync-alt"></i> Category stays, amount clears</span>
+      <span class="batch-hint"><i class="fas fa-sync-alt"></i> Category stays</span>
     </div>
 
     <div class="table-wrap">
@@ -1544,16 +1544,21 @@
       // ---- RENDER TABLE ----
       function renderTransactionTable(entries) {
         const tbody = document.getElementById('txBody');
-        if (!tbody) return;
+        if (!tbody) {
+          console.error('Table body not found');
+          return;
+        }
         if (entries.length === 0) {
           tbody.innerHTML =
             `<tr><td colspan="6" class="empty-msg"><i class="far fa-hourglass"></i> No transactions yet. Add your first one!</td></tr>`;
           return;
         }
+
         let html = '';
-        const sorted = [...entries].reverse();
+        // Sort by date descending (newest first)
+        const sorted = [...entries].sort((a, b) => (a.date < b.date ? 1 : -1));
         sorted.forEach((e, idx) => {
-          const realIdx = entries.length - 1 - idx;
+          const realIdx = entries.indexOf(e); // original index for deletion
           const date = e.date || '—';
           const type = e.type || 'income';
           const category = e.category || '—';
@@ -1574,6 +1579,8 @@
             `;
         });
         tbody.innerHTML = html;
+
+        // Attach delete events
         document.querySelectorAll('.delete-btn').forEach(btn => {
           btn.addEventListener('click', function() {
             const idx = parseInt(this.getAttribute('data-index'), 10);
@@ -1844,7 +1851,7 @@
         }
       }
 
-      // ---- ADD TRANSACTION (UPDATED: keep category, clear amount & reason) ----
+      // ---- ADD TRANSACTION ----
       function addTransaction() {
         try {
           const date = document.getElementById('txDate').value.trim();
@@ -1881,7 +1888,7 @@
           });
           saveEntries(entries);
 
-          // Clear only amount & reason – keep category for next entry
+          // Clear amount & reason – keep category for next entry
           document.getElementById('txAmount').value = '';
           document.getElementById('txReason').value = '';
           document.getElementById('txAmount').focus(); // focus on amount for next entry
