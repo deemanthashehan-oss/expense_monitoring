@@ -1081,7 +1081,7 @@
 
       let currentUser = null;
       let appInitialized = false;
-      let loginMode = 'signin'; // 'signin' | 'signup'
+      let loginMode = 'signin';
 
       // ============================================================
       // SCOPED STORAGE HELPERS
@@ -1145,7 +1145,6 @@
               .map(b => b.toString(16).padStart(2, '0')).join('');
           } catch (e) { /* fall through */ }
         }
-        // Fallback hash (non-crypto, used only when SubtleCrypto is unavailable)
         let h1 = 0x811c9dc5, h2 = 0x1000193;
         for (let i = 0; i < input.length; i++) {
           const c = input.charCodeAt(i);
@@ -1169,6 +1168,7 @@
         }
         refreshEverything();
         updateGreeting();
+        switchTab('transactions');   // ← FIX: shows FAB, activates nav & tab
       }
 
       function initUserState() {
@@ -1192,7 +1192,6 @@
         try { localStorage.removeItem(SESSION_KEY); } catch (e) {}
         currentUser = null;
 
-        // Reset UI state
         document.getElementById('appShell').style.display = 'none';
         document.getElementById('loginScreen').style.display = 'flex';
         closeSheet(txSheet);
@@ -1242,7 +1241,6 @@
         const password = document.getElementById('loginPass').value;
         const btn = document.getElementById('loginSubmit');
 
-        // Validate
         if (username.length < 3) { setLoginError('Username must be at least 3 characters.'); return; }
         if (!/^[a-zA-Z0-9_.]+$/.test(username)) {
           setLoginError('Username can only use letters, numbers, "_" and ".".'); return;
@@ -1331,7 +1329,7 @@
       }
 
       // ============================================================
-      // MONTHS STATE (module-level, reinit on login)
+      // MONTHS STATE
       // ============================================================
       let months = [];
       let selectedMonth = currentMonthKey();
@@ -1383,8 +1381,10 @@
       // CATEGORY DROPDOWN
       // ============================================================
       function populateCategories() {
-        const type = document.getElementById('txType').value;
+        const typeEl = document.getElementById('txType');
         const sel = document.getElementById('txCategory');
+        if (!typeEl || !sel) return;
+        const type = typeEl.value;
         const list = (type === 'income') ? INCOME_CATEGORIES : EXPENSE_CATEGORIES;
         const currentValue = sel.value;
         sel.innerHTML = list.map(c =>
@@ -1397,6 +1397,7 @@
         const sel = document.getElementById('txCategory');
         const field = document.getElementById('customCatField');
         const input = document.getElementById('txCategoryCustom');
+        if (!sel || !field || !input) return;
         if (sel.value === 'Other') {
           field.style.display = '';
         } else {
@@ -1425,7 +1426,6 @@
           });
         });
 
-        // Scroll active pill into view
         const active = container.querySelector('.month-pill.active');
         if (active) {
           try { active.scrollIntoView({ inline: 'center', block: 'nearest', behavior: 'smooth' }); }
@@ -1458,7 +1458,6 @@
         const container = document.getElementById('txList');
         const countBadge = document.getElementById('txCount');
 
-        // Single read so reference equality survives for deletion
         const allEntries = getEntries();
         const entries = allEntries.filter(e => (e.date || '').indexOf(selectedMonth) === 0);
 
@@ -1552,7 +1551,6 @@
         const elExpSub = document.getElementById('mExpenseSub');
         const elNetSub = document.getElementById('mNetSub');
 
-        // Compact formatting for narrow KPI cards
         function fmt(n) {
           const abs = Math.abs(n);
           if (abs >= 1e9) return (n / 1e9).toFixed(2) + 'B';
@@ -1580,6 +1578,11 @@
           const customInput = document.getElementById('txCategoryCustom');
           const amountInput = document.getElementById('txAmount');
           const reasonInput = document.getElementById('txReason');
+
+          // Guard: category dropdown must be populated
+          if (!catSelect.options.length) {
+            populateCategories();
+          }
 
           let category = catSelect.value;
           if (category === 'Other') {
@@ -1900,7 +1903,6 @@
           ? 'Add more months'
           : sorted.length + ' months';
 
-        // Render list
         const fmt = n => {
           const abs = Math.abs(n);
           if (abs >= 1e6) return (n / 1e6).toFixed(2) + 'M';
@@ -1931,7 +1933,6 @@
         });
         if (list) list.innerHTML = html;
 
-        // Render chart
         const canvas = document.getElementById('compareChart');
         if (!canvas) return;
         if (compareChart) { compareChart.destroy(); compareChart = null; }
@@ -2063,7 +2064,6 @@
 
       function openSheet(sheet) {
         if (!sheet) return;
-        // close any open sheet first
         if (txSheet.classList.contains('open') && sheet !== txSheet) closeSheet(txSheet);
         if (loanSheet.classList.contains('open') && sheet !== loanSheet) closeSheet(loanSheet);
 
@@ -2091,6 +2091,9 @@
       });
 
       function openTxSheet() {
+        if (!document.getElementById('txCategory').options.length) {
+          populateCategories();
+        }
         updateTxDateInput();
         openSheet(txSheet);
         setTimeout(function() {
@@ -2126,7 +2129,6 @@
         const fab = document.getElementById('fabAdd');
         if (fab) fab.classList.toggle('visible', target === 'transactions');
 
-        // Scroll main to top on tab switch
         const main = document.getElementById('appMain');
         if (main) main.scrollTop = 0;
 
@@ -2141,30 +2143,26 @@
       // SETUP (once, after login)
       // ============================================================
       function setupApp() {
-        // Nav buttons
         Array.prototype.forEach.call(document.querySelectorAll('.nav-btn'), function(b) {
           b.addEventListener('click', function() {
             switchTab(this.getAttribute('data-tab'));
           });
         });
 
-        // FAB
         document.getElementById('fabAdd').addEventListener('click', openTxSheet);
-
-        // Sheet close buttons
         document.getElementById('txSheetClose').addEventListener('click', () => closeSheet(txSheet));
         document.getElementById('loanSheetClose').addEventListener('click', () => closeSheet(loanSheet));
 
-        // Segmented controls
         setupSegmented('txTypeSeg', 'txType', function() {
           populateCategories();
         });
         setupSegmented('loanTypeSeg', 'loanType');
 
-        // Type change (fallback if hidden select changed directly)
+        // ← FIX: pre-fill the category dropdown on first load
+        populateCategories();
+
         document.getElementById('txType').addEventListener('change', populateCategories);
 
-        // Category change
         document.getElementById('txCategory').addEventListener('change', function() {
           toggleCustomCategory();
           if (this.value === 'Other') {
@@ -2176,7 +2174,6 @@
           if (e.key === 'Enter') { e.preventDefault(); document.getElementById('txAmount').focus(); }
         });
 
-        // Add transaction
         document.getElementById('addBtn').addEventListener('click', addTransaction);
         ['txAmount', 'txReason'].forEach(function(id) {
           const el = document.getElementById(id);
@@ -2185,7 +2182,6 @@
           });
         });
 
-        // Add loan
         document.getElementById('openLoanSheetBtn').addEventListener('click', openLoanSheet);
         document.getElementById('addLoanBtn').addEventListener('click', addLoan);
         document.getElementById('loanPerson').addEventListener('keypress', function(e) {
@@ -2198,21 +2194,17 @@
           if (e.key === 'Enter') { e.preventDefault(); addLoan(); }
         });
 
-        // Report buttons
         document.getElementById('printReportBtn').addEventListener('click', function() { window.print(); });
         document.getElementById('emailReportBtn').addEventListener('click', sendReportViaEmail);
 
-        // Month adder
         const newMonthInput = document.getElementById('newMonthInput');
         newMonthInput.addEventListener('change', function() {
           addMonthFromInput(this.value);
           this.value = '';
         });
 
-        // Logout
         document.getElementById('logoutBtn').addEventListener('click', logout);
 
-        // Collapsible sections
         Array.prototype.forEach.call(document.querySelectorAll('.collapse-btn'), function(btn) {
           btn.addEventListener('click', function() {
             const id = this.getAttribute('data-target');
@@ -2225,7 +2217,6 @@
           });
         });
 
-        // Resize re-render
         let resizeTimer;
         window.addEventListener('resize', function() {
           clearTimeout(resizeTimer);
@@ -2234,7 +2225,6 @@
           }, 220);
         });
 
-        // Greeting ticker
         setInterval(updateGreeting, 60000);
       }
 
@@ -2280,7 +2270,6 @@
       // BOOT
       // ============================================================
       window.addEventListener('DOMContentLoaded', function() {
-        // Ensure a default month exists even before login (harmless)
         const sessionUser = (function() {
           try { return localStorage.getItem(SESSION_KEY); } catch (e) { return null; }
         })();
@@ -2291,11 +2280,9 @@
             startApp(users[sessionUser.toLowerCase()].username || sessionUser);
             return;
           }
-          // stale session
           try { localStorage.removeItem(SESSION_KEY); } catch (e) {}
         }
 
-        // Show login
         document.getElementById('loginScreen').style.display = 'flex';
         document.getElementById('appShell').style.display = 'none';
         setTimeout(function() {
